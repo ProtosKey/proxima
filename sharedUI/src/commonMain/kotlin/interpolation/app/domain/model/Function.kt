@@ -15,10 +15,6 @@ import kotlin.math.pow
 sealed class Function : CanVisit {
     abstract fun calculate(value: BigDecimal): BigDecimal
 
-    companion object {
-        fun getSizeFor(type: FunctionInfo): Int = type.size
-    }
-
     class Linear(
         private val a: BigDecimal,
         private val b: BigDecimal
