@@ -10,6 +10,9 @@ androidx-lifecycle = "2.10.0"
 androidx-nav3 = "1.0.0-alpha06"
 buildConfig = "5.6.5"
 materialKolor = "4.1.1"
+vico = "2.0.0-alpha.28"
+kermit = "2.0.4"
+bignum = "0.3.9"
 
 [libraries]
 
@@ -30,6 +33,11 @@ androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:life
 androidx-lifecycle-runtime = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 compose-nav3 = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "androidx-nav3" }
 materialKolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+vico-compose = { group = "com.patrykandpatrick.vico", name = "compose", version.ref = "vico" }
+vico-compose-m3 = { group = "com.patrykandpatrick.vico", name = "compose-m3", version.ref = "vico" }
+vico-core = { group = "com.patrykandpatrick.vico", name = "core", version.ref = "vico" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+bignum = { module = "com.ionspin.kotlin:bignum", version.ref = "bignum" }
 
 [plugins]
 

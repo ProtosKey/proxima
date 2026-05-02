@@ -11,7 +11,7 @@ plugins {
 }
 
 kotlin {
-    androidTarget { //We need the deprecated target to have working previews
+    androidTarget {
         compilerOptions { jvmTarget = JvmTarget.JVM_17 }
     }
 
@@ -31,6 +31,12 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime)
             implementation(libs.compose.nav3)
             implementation(libs.materialKolor)
+
+            implementation(libs.vico.compose)
+            implementation(libs.vico.compose.m3)
+            implementation(libs.vico.core)
+            implementation(libs.kermit)
+            implementation(libs.bignum)
         }
 
         commonTest.dependencies {
@@ -63,7 +69,7 @@ dependencies {
 }
 android {
     namespace = "interpolation.app"
-    compileSdk = 36
+    compileSdk = 35
     defaultConfig {
         minSdk = 23
     }
