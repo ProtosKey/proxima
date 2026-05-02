@@ -6,19 +6,26 @@ import interpolation.app.domain.basic.CanVisit
 import interpolation.app.domain.basic.FunctionInfo
 import interpolation.app.domain.basic.FunctionVisitor
 import interpolation.app.domain.exception.FunctionException
+import interpolation.app.domain.math.DecimalUtils
+import interpolation.app.domain.math.ln
 import interpolation.app.domain.math.toDouble
 import kotlin.math.exp
-import kotlin.math.ln
 import kotlin.math.pow
 
-sealed class Function : CanVisit, FunctionInfo {
+sealed class Function : CanVisit {
     abstract fun calculate(value: BigDecimal): BigDecimal
+
+    companion object {
+        fun getSizeFor(type: FunctionInfo): Int = type.size
+    }
 
     class Linear(
         private val a: BigDecimal,
         private val b: BigDecimal
     ) : Function() {
-        override val size = 2
+        companion object : FunctionInfo {
+            override val size = 2
+        }
 
         override fun calculate(value: BigDecimal): BigDecimal {
             return value * a + b
@@ -34,7 +41,9 @@ sealed class Function : CanVisit, FunctionInfo {
         private val b: BigDecimal,
         private val c: BigDecimal
     ) : Function() {
-        override val size = 3
+        companion object : FunctionInfo {
+            override val size = 3
+        }
 
         override fun calculate(value: BigDecimal): BigDecimal {
             return a * value.pow(2) + b * value + c
@@ -51,7 +60,9 @@ sealed class Function : CanVisit, FunctionInfo {
         private val c: BigDecimal,
         private val d: BigDecimal
     ) : Function() {
-        override val size = 4
+        companion object : FunctionInfo {
+            override val size = 4
+        }
 
         override fun calculate(value: BigDecimal): BigDecimal {
             return a * value.pow(3) + b * value.pow(2) + c * value + d
@@ -66,7 +77,9 @@ sealed class Function : CanVisit, FunctionInfo {
         private val a: BigDecimal,
         private val b: BigDecimal
     ) : Function() {
-        override val size = 2
+        companion object : FunctionInfo {
+            override val size = 2
+        }
 
         override fun calculate(value: BigDecimal): BigDecimal {
             return a * exp((b * value).toDouble()).toBigDecimal()
@@ -81,13 +94,15 @@ sealed class Function : CanVisit, FunctionInfo {
         private val a: BigDecimal,
         private val b: BigDecimal
     ) : Function() {
-        override val size = 2
+        companion object : FunctionInfo {
+            override val size = 2
+        }
 
         override fun calculate(value: BigDecimal): BigDecimal {
             if (value <= BigDecimal.ZERO) {
                 throw FunctionException("Аргумент логарифма должен быть больше нуля")
             }
-            return a * ln((value).toDouble()).toBigDecimal() + b
+            return a * value.ln(DecimalUtils.DIVIDE_MODE) + b
         }
 
         override fun acceptVisitor(visitor: FunctionVisitor): String {
@@ -99,7 +114,9 @@ sealed class Function : CanVisit, FunctionInfo {
         private val a: BigDecimal,
         private val b: BigDecimal
     ) : Function() {
-        override val size = 2
+        companion object : FunctionInfo {
+            override val size = 2
+        }
 
         override fun calculate(value: BigDecimal): BigDecimal {
             return a * value.toDouble().pow(b.toDouble()).toBigDecimal()
