@@ -25,6 +25,6 @@ object ExponentSolver : CanSolve {
         }
 
         val result = InterpolationEngine.calculate(lat, lon, Function.Exponent.size)
-        return Function.Exponent(result[0].exp(DecimalUtils.DIVIDE_MODE), result[0])
+        return Function.Exponent(result[0].exp(DecimalUtils.DIVIDE_MODE), result[1])
     }
 }
