@@ -1,16 +1,14 @@
 package interpolation.app.domain.model;
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import interpolation.app.domain.basic.CanVisit
 import interpolation.app.domain.basic.FunctionInfo
 import interpolation.app.domain.basic.FunctionVisitor
 import interpolation.app.domain.exception.FunctionException
 import interpolation.app.domain.math.DecimalUtils
+import interpolation.app.domain.math.exp
 import interpolation.app.domain.math.ln
-import interpolation.app.domain.math.toDouble
-import kotlin.math.exp
-import kotlin.math.pow
+import interpolation.app.domain.math.pow
 
 sealed class Function : CanVisit {
     abstract fun calculate(value: BigDecimal): BigDecimal
@@ -78,7 +76,7 @@ sealed class Function : CanVisit {
         }
 
         override fun calculate(value: BigDecimal): BigDecimal {
-            return a * exp((b * value).toDouble()).toBigDecimal()
+            return a * (b * value).exp(DecimalUtils.DIVIDE_MODE)
         }
 
         override fun acceptVisitor(visitor: FunctionVisitor): String {
@@ -115,7 +113,7 @@ sealed class Function : CanVisit {
         }
 
         override fun calculate(value: BigDecimal): BigDecimal {
-            return a * value.toDouble().pow(b.toDouble()).toBigDecimal()
+            return a * value.pow(b, DecimalUtils.DIVIDE_MODE)
         }
 
         override fun acceptVisitor(visitor: FunctionVisitor): String {
