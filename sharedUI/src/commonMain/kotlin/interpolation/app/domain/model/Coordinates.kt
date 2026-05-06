@@ -23,12 +23,19 @@ class Coordinates(points: MutableList<Point>) : Iterable<Point> {
         }
     }
 
-    operator fun get(index: Int): Point = points[index]
-    override fun iterator() = points.iterator()
-    val size: Int get() = points.size
     fun isEmpty(): Boolean {
         return points.size == 0
     }
+
+    operator fun set(index: Int, point: Point) {
+        points[index] = point
+    }
+
+    operator fun get(index: Int): Point = points[index]
+
+    override fun iterator() = points.iterator()
+
+    val size: Int get() = points.size
 
     fun addPoint(point: Point) {
         if (points.size == MAX_SIZE) {
