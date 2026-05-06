@@ -1,4 +1,4 @@
-package interpolation.app.presentation.model
+package interpolation.app.data.model
 
 enum class MessageType {
     ERROR,

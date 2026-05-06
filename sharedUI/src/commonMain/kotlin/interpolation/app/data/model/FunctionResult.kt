@@ -1,4 +1,4 @@
-package interpolation.app.presentation.model
+package interpolation.app.data.model
 
 import interpolation.app.domain.model.Function
 import interpolation.app.domain.model.Metrics
