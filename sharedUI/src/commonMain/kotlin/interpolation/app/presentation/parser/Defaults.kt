@@ -9,14 +9,17 @@ import kotlin.random.Random
 
 object Defaults {
     private const val POINT_COUNT = 3
-    private const val DEFAULT_MESSAGE = "Начните работу..."
 
     fun message(): String {
-        return DEFAULT_MESSAGE
+        return "Начните работу..."
     }
 
     fun messageType(): MessageType {
         return MessageType.GOOD
+    }
+
+    fun visible(): Boolean {
+        return false
     }
 
     fun coordinates(): Coordinates {
