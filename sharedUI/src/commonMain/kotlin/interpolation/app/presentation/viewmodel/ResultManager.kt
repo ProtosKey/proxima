@@ -2,15 +2,10 @@ package interpolation.app.presentation.viewmodel
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import interpolation.app.domain.exception.EngineException
-import interpolation.app.domain.exception.FunctionException
-import interpolation.app.domain.exception.InitException
 import interpolation.app.domain.exception.PrecisionException
 import interpolation.app.domain.exception.SolverException
 import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.precision.QualityAnalyzer
-import interpolation.app.presentation.exception.ModelException
-import interpolation.app.presentation.exception.ParserException
 import interpolation.app.presentation.model.FunctionResult
 import interpolation.app.presentation.model.FunctionType
 import interpolation.app.presentation.model.MessageType
