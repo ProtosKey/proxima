@@ -2,11 +2,20 @@ package interpolation.app.domain.model
 
 import interpolation.app.domain.exception.InitException
 
-class Coordinates(val points: MutableList<Point>) : Iterable<Point> {
+class Coordinates(points: MutableList<Point>) : Iterable<Point> {
     companion object {
         const val MAX_SIZE = 12
         const val MIN_SIZE = 2
     }
+
+    var points = points
+        set(value) {
+            if (value.size > MAX_SIZE)
+                throw InitException("Превышен лимит в $MAX_SIZE точек")
+            if (value.size < MIN_SIZE)
+                throw InitException("Количество точек меньше минимума в $MIN_SIZE точек")
+            field = value
+        }
 
     init {
         if (points.size > MAX_SIZE) {
