@@ -5,7 +5,7 @@ import interpolation.app.presentation.basic.Mapper
 import interpolation.app.presentation.model.PointLabel
 import interpolation.app.presentation.parser.StringParser
 
-object PointMapper : Mapper<Point, PointLabel> {
+object LabelMapper : Mapper<Point, PointLabel> {
     override fun mapTo(t: Point): PointLabel {
         return PointLabel(
             StringParser.prepareToString(t.x),
