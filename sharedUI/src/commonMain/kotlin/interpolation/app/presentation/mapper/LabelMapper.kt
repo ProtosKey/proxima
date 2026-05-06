@@ -3,7 +3,7 @@ package interpolation.app.presentation.mapper
 import interpolation.app.domain.model.Point
 import interpolation.app.presentation.basic.Mapper
 import interpolation.app.presentation.model.PointLabel
-import interpolation.app.presentation.parser.StringParser
+import interpolation.app.presentation.tools.StringParser
 
 object LabelMapper : Mapper<Point, PointLabel> {
     override fun mapTo(t: Point): PointLabel {

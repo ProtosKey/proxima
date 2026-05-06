@@ -1,4 +1,4 @@
-package interpolation.app.presentation.parser
+package interpolation.app.presentation.tools
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal

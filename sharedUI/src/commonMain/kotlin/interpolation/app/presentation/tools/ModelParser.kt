@@ -1,4 +1,4 @@
-package interpolation.app.presentation.parser
+package interpolation.app.presentation.tools
 
 import interpolation.app.domain.model.Coordinates
 import interpolation.app.presentation.mapper.EntryMapper
