@@ -1,9 +1,8 @@
 package interpolation.app.presentation.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
 
-class SettingManager : ViewModel() {
+class SettingsManager {
     var isDarkMode = mutableStateOf(false)
     var isAutoUpdate = mutableStateOf(false)
     var clearOnTouch = mutableStateOf(true)
