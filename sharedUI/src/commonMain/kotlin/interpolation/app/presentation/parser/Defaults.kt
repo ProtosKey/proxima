@@ -1,0 +1,34 @@
+package interpolation.app.presentation.parser
+
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.toBigDecimal
+import interpolation.app.domain.model.Coordinates
+import interpolation.app.domain.model.Point
+import interpolation.app.presentation.model.MessageType
+import kotlin.random.Random
+
+object Defaults {
+    private const val POINT_COUNT = 3
+    private const val DEFAULT_MESSAGE = "Начните работу..."
+
+    fun message(): String {
+        return DEFAULT_MESSAGE
+    }
+
+    fun messageType(): MessageType {
+        return MessageType.GOOD
+    }
+
+    fun coordinates(): Coordinates {
+        val points = MutableList(POINT_COUNT) { randomPoint() }
+        return Coordinates(points)
+    }
+
+    private fun randomPoint(): Point {
+        return Point(randomBigDecimal(), randomBigDecimal())
+    }
+
+    private fun randomBigDecimal(): BigDecimal {
+        return ((Random.nextDouble() - .5) * 20).toBigDecimal()
+    }
+}
