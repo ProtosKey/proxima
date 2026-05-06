@@ -31,11 +31,7 @@ object FunctionFormatter : FunctionVisitor {
     }
 
     override fun visitLogarithm(a: BigDecimal, b: BigDecimal): String {
-        return "l(x) = ${StringParser.prepareToString(a)} \\cdot \\ln(${
-            StringParser.prepareToString(
-                b
-            )
-        }x)"
+        return "l(x) = ${StringParser.prepareToString(a)} \\cdot \\ln(x) ${getSign(b)} ${b.abs()}"
     }
 
     override fun visitPower(a: BigDecimal, b: BigDecimal): String {
