@@ -13,7 +13,8 @@ materialKolor = "4.1.1"
 vico = "2.0.0-alpha.28"
 kermit = "2.0.4"
 bignum = "0.3.9"
-voyager = "1.1.0-beta03"
+voyager = "1.0.0"
+latex = "1.1.1"
 
 [libraries]
 
@@ -43,6 +44,10 @@ voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
+compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version = "1.7.3" }
+latex-base = { module = "io.github.huarangmeng:latex-base", version.ref = "latex" }
+latex-parser = { module = "io.github.huarangmeng:latex-parser", version.ref = "latex" }
+latex-renderer = { module = "io.github.huarangmeng:latex-renderer", version.ref = "latex" }
 
 [plugins]
 

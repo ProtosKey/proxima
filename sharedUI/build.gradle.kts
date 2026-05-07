@@ -41,6 +41,12 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.transitions)
+            implementation(libs.compose.material.icons)
+
+            implementation(libs.latex.base)
+            implementation(libs.latex.parser)
+            implementation(libs.latex.renderer)
+            implementation(libs.compose.material.icons)
         }
 
         commonTest.dependencies {
@@ -50,6 +56,7 @@ kotlin {
         }
 
         androidMain.dependencies {
+            implementation(libs.kotlinx.coroutines.android)
             implementation(libs.kotlinx.coroutines.android)
         }
 
@@ -75,7 +82,7 @@ android {
     namespace = "interpolation.app"
     compileSdk = 35
     defaultConfig {
-        minSdk = 23
+        minSdk = 24
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
