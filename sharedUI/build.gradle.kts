@@ -37,6 +37,10 @@ kotlin {
             implementation(libs.vico.core)
             implementation(libs.kermit)
             implementation(libs.bignum)
+
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.screenmodel)
+            implementation(libs.voyager.transitions)
         }
 
         commonTest.dependencies {
