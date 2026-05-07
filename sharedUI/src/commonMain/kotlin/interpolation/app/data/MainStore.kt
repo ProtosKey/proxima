@@ -4,6 +4,7 @@ import interpolation.app.data.model.FunctionResult
 import interpolation.app.data.model.FunctionType
 import interpolation.app.data.model.MessageType
 import interpolation.app.data.model.Notification
+import interpolation.app.data.model.Settings
 import interpolation.app.domain.model.Point
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +19,13 @@ object MainStore {
 
     private val _notification = MutableStateFlow(Notification())
     val notification = _notification.asStateFlow()
+
+    private val _settings = MutableStateFlow(Settings())
+    val settings = _settings.asStateFlow()
+
+    fun updateSettingsNewPoints(isNewPoints: Boolean) {
+        _settings.update { it.copy(isNewPoints = isNewPoints) }
+    }
 
     fun updatePoints(points: List<Point>) {
         _points.value = points

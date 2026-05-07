@@ -18,6 +18,8 @@ import kotlin.random.Random
 object Defaults {
     private const val POINT_COUNT = 3
 
+    fun newPoint(): Boolean = true
+
     fun exception(): String = "Неожиданная ошибка"
 
     fun message(): String = "Начните работу..."
