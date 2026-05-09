@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +41,12 @@ fun RowScope.NavigationElem(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick
+            )
+            .padding(
+                start = LocalAppDimens.current.paddingTiny,
+                end = LocalAppDimens.current.paddingTiny,
+                top = LocalAppDimens.current.paddingTiny,
+                bottom = LocalAppDimens.current.paddingMedium
             ),
         contentAlignment = Alignment.Center
     ) {

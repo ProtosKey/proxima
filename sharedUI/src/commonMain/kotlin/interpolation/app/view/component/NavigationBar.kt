@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import interpolation.app.theme.LocalAppDimens
 import interpolation.app.view.feature.input.InputScreen
-import interpolation.app.view.feature.graph.MainScreen
+import interpolation.app.view.feature.graph.GraphScreen
 import interpolation.app.view.feature.result.ResultsScreen
 import interpolation.app.view.feature.settings.SettingsScreen
 
@@ -41,12 +41,13 @@ fun NavigationBar(navigator: Navigator) {
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
             NavigationElem(
-                selected = screen is MainScreen,
-                onClick = { if (screen !is MainScreen) navigator.replaceAll(MainScreen()) },
+                selected = screen is GraphScreen,
+                onClick = { if (screen !is GraphScreen) navigator.replaceAll(GraphScreen()) },
                 icon = Icons.Default.Home,
                 label = "Главная"
             )
