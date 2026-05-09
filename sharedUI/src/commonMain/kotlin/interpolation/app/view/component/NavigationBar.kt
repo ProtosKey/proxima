@@ -1,62 +1,75 @@
 package interpolation.app.view.component
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
-import interpolation.app.view.screen.InputScreen
-import interpolation.app.view.screen.MainScreen
-import interpolation.app.view.screen.ResultsScreen
-import interpolation.app.view.screen.SettingsScreen
+import interpolation.app.theme.LocalAppDimens
+import interpolation.app.view.feature.input.InputScreen
+import interpolation.app.view.feature.graph.MainScreen
+import interpolation.app.view.feature.result.ResultsScreen
+import interpolation.app.view.feature.settings.SettingsScreen
 
 @Composable
 fun NavigationBar(navigator: Navigator) {
-    Column {
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
+    val screen = navigator.lastItem
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+            .height(LocalAppDimens.current.navbar)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(LocalAppDimens.current.strokeThin)
+                .background(MaterialTheme.colorScheme.outlineVariant)
         )
-        NavigationBar(
-            containerColor = MaterialTheme.colorScheme.surface,
-            tonalElevation = 0.dp
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            NavigationBarItem(
-                selected = true,
-                onClick = { navigator.push(MainScreen()) },
-                icon = { Icon(Icons.Default.Home, contentDescription = "Главная") },
-                label = { Text("Главная") }
+            NavigationElem(
+                selected = screen is MainScreen,
+                onClick = { if (screen !is MainScreen) navigator.replaceAll(MainScreen()) },
+                icon = Icons.Default.Home,
+                label = "Главная"
             )
 
-            NavigationBarItem(
-                selected = false,
-                onClick = { navigator.push(InputScreen()) },
-                icon = { Icon(Icons.Default.Edit, contentDescription = "Ввод") },
-                label = { Text("Ввод") }
+            NavigationElem(
+                selected = screen is InputScreen,
+                onClick = { if (screen !is InputScreen) navigator.replaceAll(InputScreen()) },
+                icon = Icons.Default.Edit,
+                label = "Ввод"
             )
 
-            NavigationBarItem(
-                selected = false,
-                onClick = { navigator.push(ResultsScreen()) },
-                icon = { Icon(Icons.Default.BarChart, contentDescription = "Результаты") },
-                label = { Text("Результаты") }
+            NavigationElem(
+                selected = screen is ResultsScreen,
+                onClick = { if (screen !is ResultsScreen) navigator.replaceAll(ResultsScreen()) },
+                icon = Icons.Default.BarChart,
+                label = "Результаты"
             )
 
-            NavigationBarItem(
-                selected = false,
-                onClick = { navigator.push(SettingsScreen()) },
-                icon = { Icon(Icons.Default.Settings, contentDescription = "Настройки") },
-                label = { Text("Настройки") }
+            NavigationElem(
+                selected = screen is SettingsScreen,
+                onClick = { if (screen !is SettingsScreen) navigator.replaceAll(SettingsScreen()) },
+                icon = Icons.Default.Settings,
+                label = "Настройки"
             )
         }
     }
