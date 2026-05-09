@@ -20,6 +20,8 @@ object Defaults {
 
     fun newPoint(): Boolean = true
 
+    fun autoUpdate(): Boolean = false
+
     fun exception(): String = "Неожиданная ошибка"
 
     fun message(): String = "Начните работу..."

@@ -24,7 +24,23 @@ object MainStore {
     val settings = _settings.asStateFlow()
 
     fun updateSettingsNewPoints(isNewPoints: Boolean) {
-        _settings.update { it.copy(isNewPoints = isNewPoints) }
+        _settings.update {
+            it.copy(
+                isNewPoints = it.isNewPoints.copy(
+                    parameter = isNewPoints
+                )
+            )
+        }
+    }
+
+    fun updateSettingAutoUpdate(isAutoUpdate: Boolean) {
+        _settings.update {
+            it.copy(
+                isAutoUpdate = it.isAutoUpdate.copy(
+                    parameter = isAutoUpdate
+                )
+            )
+        }
     }
 
     fun updatePoints(points: List<Point>) {
