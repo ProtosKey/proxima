@@ -44,11 +44,11 @@ object Defaults {
         FunctionType.SECOND to SquareSolver
     )
 
-    private fun randomPoint(): Point {
+    fun randomPoint(): Point {
         return Point(randomBigDecimal(), randomBigDecimal())
     }
 
     private fun randomBigDecimal(): BigDecimal {
-        return ((Random.Default.nextDouble() - .5) * 20).toBigDecimal()
+        return ((Random.nextDouble() - .5) * 20).toBigDecimal()
     }
 }

@@ -23,6 +23,16 @@ object MainStore {
     private val _settings = MutableStateFlow(Settings())
     val settings = _settings.asStateFlow()
 
+    fun deletePointByIndex(index: Int) {
+        _points.update { points ->
+            val newPoints = points.toMutableList()
+            if (index in newPoints.indices) {
+                newPoints.removeAt(index)
+            }
+            newPoints
+        }
+    }
+
     fun updateSettingsNewPoints(isNewPoints: Boolean) {
         _settings.update {
             it.copy(
@@ -44,11 +54,11 @@ object MainStore {
     }
 
     fun updatePoints(points: List<Point>) {
-        _points.value = points
+        _points.update { points }
     }
 
     fun updateFunctions(results: Map<FunctionType, FunctionResult>) {
-        _results.value = results
+        _results.update { results }
     }
 
     fun showMessage(message: String, messageType: MessageType) {
