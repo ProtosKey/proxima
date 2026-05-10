@@ -36,7 +36,7 @@ object StringParser {
     fun parseBigDecimal(value: String): BigDecimal {
         try {
             return prepareNumber(value).toBigDecimal()
-        } catch (e: NumberFormatException) {
+        } catch (_: NumberFormatException) {
             if (value.isEmpty()) {
                 throw ParserException("Значение не может быть пустым")
             } else {

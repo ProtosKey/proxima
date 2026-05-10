@@ -52,15 +52,42 @@ class InputViewModel : ViewModel(), HaveMessage {
             newInput[index] = PointEntry(x, y)
             _inputState.update { it.copy(input = newInput) }
             parsePoints()
-        } catch (e: ParserException) {
+        } catch (e: ModelException) {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
         }
     }
 
+    /*
     fun addPoint(x: String, y: String) {
         if (_inputState.value.input.size < Coordinates.MAX_SIZE) {
-            _inputState.update { it.copy(input = _inputState.value.input + PointEntry(x, y)) }
+            _inputState.update {
+                it.copy(
+                    input = _inputState.value.input + PointEntry(x, y),
+                    canDelete = _inputState.value.input.size > Coordinates.MIN_SIZE,
+                    canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
+                )
+            }
             parsePoints()
+        } else {
+            showMessage(
+                "Превышено допустимое количество точек в ${Coordinates.MAX_SIZE} единиц",
+                MessageType.ERROR
+            )
+        }
+    }
+     */
+
+    fun addPoint() {
+        val point = Defaults.randomPoint()
+        if (_inputState.value.input.size < Coordinates.MAX_SIZE) {
+            _inputState.update {
+                it.copy(
+                    input = _inputState.value.input + EntryMapper.mapTo(point),
+                    canDelete = _inputState.value.input.size + 1 > Coordinates.MIN_SIZE,
+                    canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
+                )
+            }
+            MainStore.updatePoints(MainStore.points.value + point)
         } else {
             showMessage(
                 "Превышено допустимое количество точек в ${Coordinates.MAX_SIZE} единиц",
@@ -72,25 +99,25 @@ class InputViewModel : ViewModel(), HaveMessage {
     fun removeByIndex(index: Int) {
         try {
             checkIndex(index)
-            val newInput = _inputState.value.input.toMutableList()
-            newInput.removeAt(index)
-            _inputState.update { it.copy(input = newInput) }
-            parsePoints()
-        } catch (e: ParserException) {
+            MainStore.deletePointByIndex(index)
+        } catch (e: ModelException) {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
         }
     }
 
-    fun parsePoints() {
+    private fun parsePoints() {
+        var needUpdate = true
         val points = _inputState.value.input.mapNotNull { point ->
             try {
                 EntryMapper.mapFrom(point)
-            } catch (_: ParserException) {
+            } catch (_: Exception) {
+                needUpdate = false
                 null
             }
         }
 
-        MainStore.updatePoints(points)
+        if (needUpdate)
+            MainStore.updatePoints(points)
     }
 
     private fun checkIndex(index: Int) {
