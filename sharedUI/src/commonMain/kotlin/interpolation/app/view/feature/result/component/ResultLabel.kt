@@ -77,7 +77,8 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         FunctionLabel(
-                            label = label, color = if (isTheBest)
+                            label = label,
+                            color = if (isTheBest)
                                 MaterialTheme.colorScheme.primary
                             else
                                 MaterialTheme.colorScheme.onSurface
@@ -93,7 +94,9 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                         }
                     }
 
-                    FunctionResult(result.function.acceptVisitor(FunctionFormatter, SIGN_APPROX))
+                    FunctionResult(
+                        latex = result.function.acceptVisitor(FunctionFormatter, SIGN_APPROX),
+                        copy = result.function.acceptVisitor(FunctionFormatter))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),

@@ -33,7 +33,7 @@ import interpolation.app.theme.LocalAppDimens
 import androidx.compose.ui.platform.LocalClipboardManager
 
 @Composable
-fun FunctionResult(latexFormula: String, copyValue: String = latexFormula) {
+fun FunctionResult(latex: String, copy: String = latex) {
     val clipboard = LocalClipboardManager.current
     val scroll = rememberScrollState()
     val dimens = LocalAppDimens.current
@@ -73,7 +73,7 @@ fun FunctionResult(latexFormula: String, copyValue: String = latexFormula) {
                 contentAlignment = Alignment.CenterStart
             ) {
                 Latex(
-                    latex = latexFormula,
+                    latex = latex,
                     config = LatexConfig(
                         fontSize = MaterialTheme.typography.bodyLarge.fontSize,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -87,7 +87,7 @@ fun FunctionResult(latexFormula: String, copyValue: String = latexFormula) {
                     .aspectRatio(1f)
                     .background(MaterialTheme.colorScheme.primary)
                     .clickable {
-                        clipboard.setText(AnnotatedString(copyValue))
+                        clipboard.setText(AnnotatedString(copy))
                     },
                 contentAlignment = Alignment.Center
             ) {

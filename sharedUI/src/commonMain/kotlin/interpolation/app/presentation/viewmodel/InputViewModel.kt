@@ -89,6 +89,7 @@ class InputViewModel : ViewModel(), HaveMessage {
             }
             MainStore.updatePoints(MainStore.points.value + point)
         } else {
+            println("Вывести точки")
             showMessage(
                 "Превышено допустимое количество точек в ${Coordinates.MAX_SIZE} единиц",
                 MessageType.ERROR
