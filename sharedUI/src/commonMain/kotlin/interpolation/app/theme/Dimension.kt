@@ -22,7 +22,9 @@ object AppDimens {
     val strokeThin = 1.dp
     val strokeThick = 2.dp
 
-    val navbar = 94.dp
+    val message = 48.dp
+    val navbar = 84.dp
+
     val iconSmall = 20.dp
     val iconMedium = 24.dp
     val iconLarge = 48.dp
