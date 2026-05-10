@@ -3,6 +3,7 @@ package interpolation.app.presentation.tools
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import interpolation.app.presentation.exception.ParserException
+import kotlin.math.min
 
 object StringParser {
     private val ZEROS = "0*$".toRegex()
@@ -10,8 +11,24 @@ object StringParser {
     private val ZERO_EPSILON = "1E-79".toBigDecimal()
     private const val DEFAULT_BODY = "Начните работу..."
 
-    fun prepareToString(number: BigDecimal): String {
-        return prepareNumber(number.toPlainString())
+    fun prepareToString(number: BigDecimal, sign: Int = -1): String {
+        val result = prepareNumber(number.toPlainString())
+        return if (sign < 0)
+            result
+        else
+            shortResult(result, sign)
+    }
+
+    fun shortResult(result: String, sign: Int): String {
+        return result.split(".").mapIndexedNotNull { index, string ->
+            if (index != 0)
+                if (sign == 0)
+                    null
+                else
+                    string.substring(0, min(string.length, sign))
+            else
+                string
+        }.joinToString(".")
     }
 
     fun prepareNumber(value: String): String {

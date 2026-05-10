@@ -1,10 +1,10 @@
 package interpolation.app.data.model
 
-enum class FunctionType {
-    LINEAR,
-    SECOND,
-    THIRD,
-    EXPONENT,
-    LOGARITHM,
-    POWER
+enum class FunctionType(val label: String) {
+    LINEAR("Линейная аппроксимация"),
+    SECOND("Квадратичная аппроксимация"),
+    THIRD("Кубическая аппроксимация"),
+    EXPONENT("Экспоненциальная аппроксимация"),
+    LOGARITHM("Логарифмическая аппроксимация"),
+    POWER("Показательная аппроксимация")
 }

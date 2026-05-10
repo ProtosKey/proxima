@@ -25,8 +25,11 @@ sealed class Function : CanVisit {
             return value * a + b
         }
 
-        override fun acceptVisitor(visitor: FunctionVisitor): String {
-            return visitor.visitLinear(a, b)
+        override fun acceptVisitor(
+            visitor: FunctionVisitor,
+            sign: Int
+        ): String {
+            return visitor.visitLinear(a, b, sign)
         }
     }
 
@@ -43,8 +46,11 @@ sealed class Function : CanVisit {
             return a * value.pow(2) + b * value + c
         }
 
-        override fun acceptVisitor(visitor: FunctionVisitor): String {
-            return visitor.visitSecond(a, b, c)
+        override fun acceptVisitor(
+            visitor: FunctionVisitor,
+            sign: Int
+        ): String {
+            return visitor.visitSecond(a, b, c, sign)
         }
     }
 
@@ -62,8 +68,11 @@ sealed class Function : CanVisit {
             return a * value.pow(3) + b * value.pow(2) + c * value + d
         }
 
-        override fun acceptVisitor(visitor: FunctionVisitor): String {
-            return visitor.visitThird(a, b, c, d)
+        override fun acceptVisitor(
+            visitor: FunctionVisitor,
+            sign: Int
+        ): String {
+            return visitor.visitThird(a, b, c, d, sign)
         }
     }
 
@@ -79,8 +88,11 @@ sealed class Function : CanVisit {
             return a * (b * value).exp(DecimalUtils.DIVIDE_MODE)
         }
 
-        override fun acceptVisitor(visitor: FunctionVisitor): String {
-            return visitor.visitExponent(a, b)
+        override fun acceptVisitor(
+            visitor: FunctionVisitor,
+            sign: Int
+        ): String {
+            return visitor.visitExponent(a, b, sign)
         }
     }
 
@@ -99,8 +111,11 @@ sealed class Function : CanVisit {
             return a * value.ln(DecimalUtils.DIVIDE_MODE) + b
         }
 
-        override fun acceptVisitor(visitor: FunctionVisitor): String {
-            return visitor.visitLogarithm(a, b)
+        override fun acceptVisitor(
+            visitor: FunctionVisitor,
+            sign: Int
+        ): String {
+            return visitor.visitLogarithm(a, b, sign)
         }
     }
 
@@ -116,8 +131,11 @@ sealed class Function : CanVisit {
             return a * value.pow(b, DecimalUtils.DIVIDE_MODE)
         }
 
-        override fun acceptVisitor(visitor: FunctionVisitor): String {
-            return visitor.visitPower(a, b)
+        override fun acceptVisitor(
+            visitor: FunctionVisitor,
+            sign: Int
+        ): String {
+            return visitor.visitPower(a, b, sign)
         }
     }
 }
