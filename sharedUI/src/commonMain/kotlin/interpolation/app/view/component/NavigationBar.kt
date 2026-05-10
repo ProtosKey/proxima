@@ -36,7 +36,7 @@ fun NavigationBar(navigator: Navigator) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(LocalAppDimens.current.strokeThin)
-                .background(MaterialTheme.colorScheme.outlineVariant)
+                .background(MaterialTheme.colorScheme.outline)
         )
 
         Row(
