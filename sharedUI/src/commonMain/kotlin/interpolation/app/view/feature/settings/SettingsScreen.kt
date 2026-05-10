@@ -31,7 +31,7 @@ class SettingsScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(LocalAppDimens.current.paddingMedium),
+                    .padding(horizontal = LocalAppDimens.current.paddingMedium),
                 verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingExtraLarge)
             ) {
                 Title(label = "Настройки")

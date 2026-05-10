@@ -24,7 +24,7 @@ class GraphScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(LocalAppDimens.current.paddingMedium)
+                    .padding(horizontal = LocalAppDimens.current.paddingMedium)
             ) {
                 Title(label = "Главная")
             }

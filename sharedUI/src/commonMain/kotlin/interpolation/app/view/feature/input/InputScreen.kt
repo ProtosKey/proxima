@@ -79,7 +79,7 @@ class InputScreen : Screen {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
-                        .padding(LocalAppDimens.current.paddingMedium)
+                        .padding(horizontal = LocalAppDimens.current.paddingMedium)
                 ) {
                     Title(label = "Ввод точек")
                     LazyColumn(
@@ -89,7 +89,7 @@ class InputScreen : Screen {
                         ),
                         contentPadding = PaddingValues(
                             top = LocalAppDimens.current.paddingSmall,
-                            bottom = height + LocalAppDimens.current.paddingSmall
+                            bottom = height + LocalAppDimens.current.paddingLarge
                         ),
                     ) {
                         itemsIndexed(state.input) { index, point ->
