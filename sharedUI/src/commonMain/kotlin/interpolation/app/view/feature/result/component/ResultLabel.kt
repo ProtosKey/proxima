@@ -26,7 +26,7 @@ import interpolation.app.view.feature.result.component.Constants.SIGN_APPROX
 import interpolation.app.view.feature.result.component.Constants.SIGN_METRICS
 
 data object Constants {
-    const val SIGN_APPROX = 2
+    const val SIGN_APPROX = 5
     const val SIGN_METRICS = 10
 }
 

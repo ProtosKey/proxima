@@ -44,13 +44,10 @@ object GaussSolver {
         for (i in size - 1 downTo 0) {
             var s = BigDecimal.ZERO
             for (j in i + 1 until size) {
-                s += params[i][j] * vector[j]
+                s += params[i][j] * solution[size - 1 - j]
             }
 
             val a = params[i][i]
-            if (a.isZero()) {
-                throw SolverException("Матрица вырождена, система не имеет единственного решения")
-            }
             solution.add((vector[i] - s).divide(a, DecimalUtils.DIVIDE_MODE))
         }
         return solution.reversed()
