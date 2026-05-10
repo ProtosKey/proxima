@@ -41,8 +41,7 @@ fun FunctionResult(latexFormula: String, copyValue: String = latexFormula) {
 
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = dimens.paddingTiny),
+            .fillMaxWidth(),
         shape = RoundedCornerShape(dimens.radiusMedium),
         border = BorderStroke(
             width = dimens.strokeThin,
