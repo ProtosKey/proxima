@@ -5,6 +5,7 @@ import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import interpolation.app.data.model.FunctionType
 import interpolation.app.data.model.MessageType
 import interpolation.app.domain.basic.CanSolve
+import interpolation.app.domain.math.DecimalUtils
 import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.model.Point
 import interpolation.app.domain.solver.CubicSolver
@@ -49,6 +50,7 @@ object Defaults {
     }
 
     private fun randomBigDecimal(): BigDecimal {
-        return Random.nextInt(11).toBigDecimal()
+        return Random.nextInt(1100).toBigDecimal()
+            .divide("100".toBigDecimal(), DecimalUtils.DIVIDE_MODE)
     }
 }
