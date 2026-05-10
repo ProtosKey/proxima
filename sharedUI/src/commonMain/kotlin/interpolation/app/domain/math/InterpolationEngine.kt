@@ -7,7 +7,7 @@ import interpolation.app.domain.model.Coordinates.Companion.MIN_SIZE
 
 internal object InterpolationEngine {
     fun calculate(x: List<BigDecimal>, y: List<BigDecimal>, size: Int): List<BigDecimal> {
-        if (x.isEmpty() || y.isEmpty() || x.size != y.size) {
+        if (x.size != y.size) {
             throw EngineException("Неверное количество точек")
         } else if (x.size !in MIN_SIZE..MAX_SIZE) {
             throw EngineException("Количество точек должно быть от $MIN_SIZE до $MAX_SIZE")
