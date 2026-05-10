@@ -49,6 +49,6 @@ object Defaults {
     }
 
     private fun randomBigDecimal(): BigDecimal {
-        return ((Random.nextDouble() - .5) * 20).toBigDecimal()
+        return Random.nextInt(11).toBigDecimal()
     }
 }
