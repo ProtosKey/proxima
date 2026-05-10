@@ -32,9 +32,6 @@ kotlin {
             implementation(libs.compose.nav3)
             implementation(libs.materialKolor)
 
-            implementation(libs.vico.compose)
-            implementation(libs.vico.compose.m3)
-            implementation(libs.vico.core)
             implementation(libs.kermit)
             implementation(libs.bignum)
 
