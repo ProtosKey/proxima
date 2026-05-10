@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,23 +24,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import interpolation.app.data.utils.Defaults
 import interpolation.app.theme.LocalAppDimens
 
 @Composable
-fun Message(
+fun BoxScope.Message(
     message: String? = null,
     isVisible: Boolean = false,
     onClick: () -> Unit,
+    bottom: Dp
 ) {
     AnimatedVisibility(
         visible = isVisible && message != null,
         enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
         exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
         modifier = Modifier
+            .align(Alignment.BottomCenter)
+            .padding(bottom = bottom + LocalAppDimens.current.paddingMedium)
+            .padding(bottom = LocalAppDimens.current.paddingSmall)
             .fillMaxWidth()
-            .height(LocalAppDimens.current.message)
     ) {
         Box(
             contentAlignment = Alignment.BottomCenter,
@@ -49,7 +54,6 @@ fun Message(
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = LocalAppDimens.current.paddingSmall)
                     .clickable { onClick() },
                 shape = RoundedCornerShape(LocalAppDimens.current.radiusMedium),
                 color = MaterialTheme.colorScheme.errorContainer,

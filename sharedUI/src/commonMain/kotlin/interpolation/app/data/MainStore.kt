@@ -64,7 +64,7 @@ object MainStore {
     fun showMessage(message: String, messageType: MessageType) {
         _notification.update {
             it.copy(
-                message = message, messageType = messageType
+                message = message, messageType = messageType, isVisible = true
             )
         }
     }

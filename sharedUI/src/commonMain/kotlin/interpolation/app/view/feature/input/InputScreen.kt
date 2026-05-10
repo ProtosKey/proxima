@@ -1,6 +1,7 @@
 package interpolation.app.view.feature.input
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -74,34 +76,39 @@ class InputScreen : Screen {
                 }
             }
         ) { padding ->
-            Column(modifier = Modifier.fillMaxSize()) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(horizontal = LocalAppDimens.current.paddingMedium)
-                ) {
-                    Title(label = "Ввод точек")
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(
-                            LocalAppDimens.current.paddingSmall
-                        ),
-                        contentPadding = PaddingValues(
-                            top = LocalAppDimens.current.paddingSmall,
-                            bottom = height + LocalAppDimens.current.paddingLarge
-                        ),
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = LocalAppDimens.current.paddingMedium)
+            ) {
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
                     ) {
-                        itemsIndexed(state.input) { index, point ->
-                            Point(
-                                index = index,
-                                point = point,
-                                canDelete = viewModel.inputState.value.canDelete,
-                                onUpdate = { index: Int, x: String, y: String ->
-                                    viewModel.updatePoint(index, x, y)
-                                },
-                                onDelete = { index: Int -> viewModel.removeByIndex(index) }
-                            )
+                        Title(label = "Ввод точек")
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(
+                                LocalAppDimens.current.paddingSmall
+                            ),
+                            contentPadding = PaddingValues(
+                                top = LocalAppDimens.current.paddingSmall,
+                                bottom = height + LocalAppDimens.current.paddingLarge
+                            ),
+                        ) {
+                            itemsIndexed(state.input) { index, point ->
+                                Point(
+                                    index = index,
+                                    point = point,
+                                    canDelete = viewModel.inputState.value.canDelete,
+                                    onUpdate = { index: Int, x: String, y: String ->
+                                        viewModel.updatePoint(index, x, y)
+                                    },
+                                    onDelete = { index: Int -> viewModel.removeByIndex(index) }
+                                )
+                            }
                         }
                     }
                 }
@@ -109,7 +116,8 @@ class InputScreen : Screen {
                 Message(
                     message = message.message,
                     isVisible = message.isVisible,
-                    onClick = { viewModel.hideMessage() }
+                    onClick = { viewModel.hideMessage() },
+                    bottom = height
                 )
             }
         }
