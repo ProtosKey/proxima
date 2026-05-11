@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import interpolation.app.data.model.FunctionResult
 import interpolation.app.domain.model.Metrics
+import interpolation.app.presentation.tools.FunctionClipper
 import interpolation.app.presentation.tools.FunctionFormatter
 import interpolation.app.presentation.tools.StringParser
 import interpolation.app.theme.LocalAppDimens
@@ -96,7 +97,7 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
 
                     FunctionResult(
                         latex = result.function.acceptVisitor(FunctionFormatter),
-                        copy = result.function.acceptVisitor(FunctionFormatter))
+                        copy = result.function.acceptVisitor(FunctionClipper))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),

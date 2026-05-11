@@ -84,7 +84,7 @@ class ResultsScreen : Screen {
             ) {
                 Title(label = "Результаты")
 
-                if (state.results.entries.isNotEmpty()) {
+                if (state.results.entries.isNotEmpty() || state.isLoading) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(
