@@ -8,7 +8,6 @@ import interpolation.app.data.utils.Defaults
 import interpolation.app.domain.model.Coordinates
 import interpolation.app.presentation.basic.HaveMessage
 import interpolation.app.presentation.exception.ModelException
-import interpolation.app.presentation.exception.ParserException
 import interpolation.app.presentation.mapper.EntryMapper
 import interpolation.app.presentation.model.PointEntry
 import interpolation.app.presentation.state.InputState
@@ -56,26 +55,6 @@ class InputViewModel : ViewModel(), HaveMessage {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
         }
     }
-
-    /*
-    fun addPoint(x: String, y: String) {
-        if (_inputState.value.input.size < Coordinates.MAX_SIZE) {
-            _inputState.update {
-                it.copy(
-                    input = _inputState.value.input + PointEntry(x, y),
-                    canDelete = _inputState.value.input.size > Coordinates.MIN_SIZE,
-                    canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
-                )
-            }
-            parsePoints()
-        } else {
-            showMessage(
-                "Превышено допустимое количество точек в ${Coordinates.MAX_SIZE} единиц",
-                MessageType.ERROR
-            )
-        }
-    }
-     */
 
     fun addPoint() {
         val point = Defaults.randomPoint()

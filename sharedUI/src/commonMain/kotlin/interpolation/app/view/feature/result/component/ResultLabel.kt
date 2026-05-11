@@ -95,7 +95,7 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                     }
 
                     FunctionResult(
-                        latex = result.function.acceptVisitor(FunctionFormatter, SIGN_APPROX),
+                        latex = result.function.acceptVisitor(FunctionFormatter),
                         copy = result.function.acceptVisitor(FunctionFormatter))
 
                     Row(
