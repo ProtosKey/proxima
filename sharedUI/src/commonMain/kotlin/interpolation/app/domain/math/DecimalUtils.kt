@@ -5,6 +5,10 @@ import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 
+fun BigDecimal.toDouble(): Double {
+    return this.toString().toDouble()
+}
+
 fun BigDecimal.sqrt(decimalMode: DecimalMode): BigDecimal {
     if (this.isZero()) {
         return BigDecimal.ZERO
