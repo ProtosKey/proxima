@@ -35,6 +35,7 @@ import interpolation.app.view.component.Button
 import interpolation.app.view.component.Message
 import interpolation.app.view.component.NavigationBar
 import interpolation.app.view.component.Title
+import interpolation.app.view.feature.graph.component.Empty
 import interpolation.app.view.feature.input.component.Point
 
 class InputScreen : Screen {
@@ -87,30 +88,38 @@ class InputScreen : Screen {
                             .fillMaxSize()
                     ) {
                         Title(label = "Ввод точек")
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(
-                                LocalAppDimens.current.paddingSmall
-                            ),
-                            contentPadding = PaddingValues(
-                                top = LocalAppDimens.current.paddingSmall,
-                                bottom = height + LocalAppDimens.current.paddingLarge
-                            ),
-                        ) {
-                            itemsIndexed(state.input) { index, point ->
-                                Point(
-                                    index = index,
-                                    point = point,
-                                    canDelete = viewModel.inputState.value.canDelete,
-                                    onUpdate = { index: Int, x: String, y: String ->
-                                        viewModel.updatePoint(index, x, y)
-                                    },
-                                    onDelete = { index: Int -> viewModel.removeByIndex(index) }
-                                )
+                        if (state.input.isNotEmpty()) {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.spacedBy(
+                                    LocalAppDimens.current.paddingSmall
+                                ),
+                                contentPadding = PaddingValues(
+                                    top = LocalAppDimens.current.paddingSmall,
+                                    bottom = height + LocalAppDimens.current.paddingLarge
+                                ),
+                            ) {
+                                itemsIndexed(state.input) { index, point ->
+                                    Point(
+                                        index = index,
+                                        point = point,
+                                        canDelete = viewModel.inputState.value.canDelete,
+                                        onUpdate = { index: Int, x: String, y: String ->
+                                            viewModel.updatePoint(index, x, y)
+                                        },
+                                        onDelete = { index: Int -> viewModel.removeByIndex(index) }
+                                    )
+                                }
                             }
+                        } else {
+                            Empty(
+                                help = "Нажмите добавить для начала работы",
+                                icon = Icons.Default.Add
+                            )
                         }
                     }
                 }
+
 
                 Message(
                     message = message.message,

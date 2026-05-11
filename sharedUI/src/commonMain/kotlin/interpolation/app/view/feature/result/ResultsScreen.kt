@@ -36,6 +36,7 @@ import interpolation.app.presentation.viewmodel.ResultViewModel
 import interpolation.app.theme.LocalAppDimens
 import interpolation.app.view.component.NavigationBar
 import interpolation.app.view.component.Title
+import interpolation.app.view.feature.graph.component.Empty
 import interpolation.app.view.feature.result.component.ResultLabel
 
 class ResultsScreen : Screen {
@@ -82,37 +83,45 @@ class ResultsScreen : Screen {
                     .padding(horizontal = LocalAppDimens.current.paddingMedium)
             ) {
                 Title(label = "Результаты")
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(
-                        LocalAppDimens.current.paddingSmall
-                    ),
-                    contentPadding = PaddingValues(
-                        top = LocalAppDimens.current.paddingSmall,
-                        bottom = height + LocalAppDimens.current.paddingLarge
-                    ),
-                ) {
-                    if (state.isLoading) {
-                        item {
-                            Box(
-                                modifier = Modifier.fillMaxWidth().padding(32.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                CircularProgressIndicator()
+
+                if (state.results.entries.isNotEmpty()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(
+                            LocalAppDimens.current.paddingSmall
+                        ),
+                        contentPadding = PaddingValues(
+                            top = LocalAppDimens.current.paddingSmall,
+                            bottom = height + LocalAppDimens.current.paddingLarge
+                        ),
+                    ) {
+                        if (state.isLoading) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().padding(32.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        } else {
+                            items(
+                                state.results.entries.toList()
+                            ) { (type, result) ->
+                                val isBest = type == state.best
+                                ResultLabel(
+                                    label = type.label,
+                                    isTheBest = isBest,
+                                    result = result,
+                                )
                             }
                         }
-                    } else {
-                        items(
-                            state.results.entries.toList()
-                        ) { (type, result) ->
-                            val isBest = type == state.best
-                            ResultLabel(
-                                label = type.label,
-                                isTheBest = isBest,
-                                result = result,
-                            )
-                        }
                     }
+                } else {
+                    Empty(
+                        help = "Нажмите посчитать, чтобы провести аппроксимацию",
+                        icon = Icons.Default.QueryStats
+                    )
                 }
             }
         }
