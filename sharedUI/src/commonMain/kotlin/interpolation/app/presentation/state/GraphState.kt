@@ -9,4 +9,5 @@ data class GraphState(
     val graph: Map<FunctionType, List<PointData>> = emptyMap(),
     val canAdd: Boolean = false,
     val theBest: FunctionType? = null,
+    val isLoading: Boolean = false
 )

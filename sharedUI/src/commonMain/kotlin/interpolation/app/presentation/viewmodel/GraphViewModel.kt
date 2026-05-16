@@ -37,8 +37,9 @@ class GraphViewModel : ViewModel(), HaveMessage {
     init {
         combine(
             MainStore.points,
-            MainStore.visibleResults
-        ) { points, visible ->
+            MainStore.visibleResults,
+            MainStore.isLoading
+        ) { points, visible, isLoading ->
             val pointData = points.map(DataMapper::mapTo)
 
             _graphState.update {
@@ -46,7 +47,8 @@ class GraphViewModel : ViewModel(), HaveMessage {
                     points = pointData,
                     canAdd = points.size < Coordinates.MAX_SIZE,
                     visible = visible,
-                    theBest = findBestResult(MainStore.results.value)
+                    theBest = findBestResult(MainStore.results.value),
+                    isLoading = isLoading
                 )
             }
         }.launchIn(viewModelScope)
