@@ -23,6 +23,17 @@ object MainStore {
     private val _settings = MutableStateFlow(Settings())
     val settings = _settings.asStateFlow()
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading = _isLoading.asStateFlow()
+
+    fun startLoading() {
+        _isLoading.update { true }
+    }
+
+    fun endLoading() {
+        _isLoading.update { false }
+    }
+
     fun deletePointByIndex(index: Int) {
         _points.update { points ->
             val newPoints = points.toMutableList()

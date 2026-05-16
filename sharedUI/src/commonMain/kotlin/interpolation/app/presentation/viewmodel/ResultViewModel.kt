@@ -1,5 +1,6 @@
 package interpolation.app.presentation.viewmodel
 
+import androidx.compose.ui.graphics.Path.Companion.combine
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import interpolation.app.data.MainStore
@@ -19,6 +20,7 @@ import interpolation.app.presentation.state.ResultState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -29,7 +31,10 @@ class ResultViewModel : ViewModel(), HaveMessage {
     val resultState = _resultState.asStateFlow()
 
     init {
-        MainStore.results.onEach { results ->
+        combine(
+            MainStore.results,
+            MainStore.isLoading
+        ) { results, isLoading ->
             _resultState.update {
                 it.copy(
                     results = results,
@@ -37,7 +42,7 @@ class ResultViewModel : ViewModel(), HaveMessage {
                         (results[key] is FunctionResult.Success)
                     },*/
                     best = findBestResult(results),
-                    isLoading = false
+                    isLoading = isLoading
                 )
             }
         }.launchIn(viewModelScope)
@@ -60,7 +65,7 @@ class ResultViewModel : ViewModel(), HaveMessage {
     fun calculateResult() {
         if (_resultState.value.isLoading) return
         viewModelScope.launch(Dispatchers.Default) {
-            _resultState.update { it.copy(isLoading = true) }
+            MainStore.startLoading()
             try {
                 val points = Coordinates(MainStore.points.value.toMutableList())
                 val newResults = Defaults.solvers().mapValues { (key, solver) ->
@@ -79,7 +84,7 @@ class ResultViewModel : ViewModel(), HaveMessage {
                     getMessageByError(e), MessageType.ERROR
                 )
             } finally {
-                _resultState.update { it.copy(isLoading = false) }
+                MainStore.endLoading()
             }
         }
     }
