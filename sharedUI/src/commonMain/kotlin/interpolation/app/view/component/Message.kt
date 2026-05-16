@@ -34,7 +34,7 @@ fun BoxScope.Message(
     message: String? = null,
     isVisible: Boolean = false,
     onClick: () -> Unit,
-    bottom: Dp
+    bottom: Dp = 0.dp
 ) {
     AnimatedVisibility(
         visible = isVisible && message != null,
@@ -42,8 +42,15 @@ fun BoxScope.Message(
         exit = slideOutVertically(targetOffsetY = { it }) + fadeOut(),
         modifier = Modifier
             .align(Alignment.BottomCenter)
-            .padding(bottom = bottom + LocalAppDimens.current.paddingMedium)
-            .padding(bottom = LocalAppDimens.current.paddingSmall)
+            .padding(
+                bottom = LocalAppDimens.current.paddingMedium
+            )
+            .padding(
+                bottom = if (bottom != 0.dp)
+                    bottom + LocalAppDimens.current.paddingSmall
+                else
+                    bottom
+            )
             .fillMaxWidth()
     ) {
         Box(

@@ -80,7 +80,8 @@ class ResultsScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = LocalAppDimens.current.paddingMedium)
+                    .padding(horizontal = LocalAppDimens.current.paddingMedium),
+                verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingSmall)
             ) {
                 Title(label = "Результаты")
 

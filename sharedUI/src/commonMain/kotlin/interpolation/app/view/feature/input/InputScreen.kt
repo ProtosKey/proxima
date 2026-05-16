@@ -85,7 +85,8 @@ class InputScreen : Screen {
                 Column(modifier = Modifier.fillMaxSize()) {
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingSmall)
                     ) {
                         Title(label = "Ввод точек")
                         if (state.input.isNotEmpty()) {
