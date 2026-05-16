@@ -113,7 +113,10 @@ class ResultsScreen : Screen {
                                 ResultLabel(
                                     label = type.label,
                                     isTheBest = isBest,
-                                    result = result,
+                                    results = result,
+                                    type = type,
+                                    onHide = viewModel::tickFunction,
+                                    isVisible = viewModel.resultState.value.selected[type] ?: false
                                 )
                             }
                         }

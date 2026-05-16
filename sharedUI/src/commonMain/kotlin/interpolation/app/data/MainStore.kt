@@ -14,6 +14,9 @@ object MainStore {
     private val _points = MutableStateFlow<List<Point>>(emptyList())
     val points = _points.asStateFlow()
 
+    private val _visibleResults = MutableStateFlow<Map<FunctionType, Boolean>>(emptyMap())
+    val visibleResults = _visibleResults.asStateFlow()
+
     private val _results = MutableStateFlow<Map<FunctionType, FunctionResult>>(emptyMap())
     val results = _results.asStateFlow()
 
@@ -25,6 +28,22 @@ object MainStore {
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
+
+    fun checkVisible() {
+        _visibleResults.update {
+            _results.value.mapValues { (key, _) ->
+                _visibleResults.value[key] ?: true
+            }
+        }
+    }
+
+    fun tickVisible(type: FunctionType) {
+        _visibleResults.update { current ->
+            current.toMutableMap().apply {
+                this[type] = !(_visibleResults.value[type] ?: false)
+            }
+        }
+    }
 
     fun startLoading() {
         _isLoading.update { true }
@@ -70,6 +89,7 @@ object MainStore {
 
     fun updateFunctions(results: Map<FunctionType, FunctionResult>) {
         _results.update { results }
+        checkVisible()
     }
 
     fun showMessage(message: String, messageType: MessageType) {

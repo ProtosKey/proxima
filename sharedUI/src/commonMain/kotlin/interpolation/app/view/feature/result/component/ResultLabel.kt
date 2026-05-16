@@ -18,21 +18,27 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import interpolation.app.data.model.FunctionResult
+import interpolation.app.data.model.FunctionType
 import interpolation.app.domain.model.Metrics
 import interpolation.app.presentation.tools.FunctionClipper
 import interpolation.app.presentation.tools.FunctionFormatter
 import interpolation.app.presentation.tools.StringParser
 import interpolation.app.theme.LocalAppDimens
-import interpolation.app.view.feature.result.component.Constants.SIGN_APPROX
 import interpolation.app.view.feature.result.component.Constants.SIGN_METRICS
 
 data object Constants {
-    const val SIGN_APPROX = 5
     const val SIGN_METRICS = 10
 }
 
 @Composable
-fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
+fun ResultLabel(
+    label: String,
+    isTheBest: Boolean,
+    results: FunctionResult,
+    type: FunctionType,
+    onHide: (type: FunctionType) -> Unit,
+    isVisible: Boolean
+) {
     val border = if (isTheBest) {
         BorderStroke(
             LocalAppDimens.current.strokeThick,
@@ -51,7 +57,7 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
         MaterialTheme.colorScheme.surface
     }
 
-    when (result) {
+    when (results) {
         is FunctionResult.Success -> {
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth(),
@@ -82,7 +88,10 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                             color = if (isTheBest)
                                 MaterialTheme.colorScheme.primary
                             else
-                                MaterialTheme.colorScheme.onSurface
+                                MaterialTheme.colorScheme.onSurface,
+                            type = type,
+                            onHide = onHide,
+                            isVisible = isVisible,
                         )
 
                         if (isTheBest) {
@@ -96,8 +105,9 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                     }
 
                     FunctionResult(
-                        latex = result.function.acceptVisitor(FunctionFormatter),
-                        copy = result.function.acceptVisitor(FunctionClipper))
+                        latex = results.function.acceptVisitor(FunctionFormatter),
+                        copy = results.function.acceptVisitor(FunctionClipper)
+                    )
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -108,17 +118,17 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                         MetricResult(
                             label = "\\textsf{R}^{2} \\textsf{(Детерминация)}",
                             value = StringParser.prepareToString(
-                                result.metrics.determination,
+                                results.metrics.determination,
                                 SIGN_METRICS
                             ),
                             modifier = Modifier.weight(1f),
                         )
 
-                        if (result.metrics is Metrics.Linear) {
+                        if (results.metrics is Metrics.Linear) {
                             MetricResult(
                                 label = "\\textsf{r} \\textsf{(Пирсон)}",
                                 value = StringParser.prepareToString(
-                                    result.metrics.linear,
+                                    results.metrics.linear,
                                     SIGN_METRICS
                                 ),
                                 modifier = Modifier.weight(1f),
@@ -155,7 +165,7 @@ fun ResultLabel(label: String, isTheBest: Boolean, result: FunctionResult) {
                         color = MaterialTheme.colorScheme.error
                     )
 
-                    Text(text = result.message, style = MaterialTheme.typography.bodyMedium)
+                    Text(text = results.message, style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }

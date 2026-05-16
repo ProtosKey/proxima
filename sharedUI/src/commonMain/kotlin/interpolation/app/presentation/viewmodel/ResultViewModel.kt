@@ -1,6 +1,5 @@
 package interpolation.app.presentation.viewmodel
 
-import androidx.compose.ui.graphics.Path.Companion.combine
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import interpolation.app.data.MainStore
@@ -22,7 +21,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -33,14 +31,13 @@ class ResultViewModel : ViewModel(), HaveMessage {
     init {
         combine(
             MainStore.results,
+            MainStore.visibleResults,
             MainStore.isLoading
-        ) { results, isLoading ->
+        ) { results, visible, isLoading ->
             _resultState.update {
                 it.copy(
                     results = results,
-                    /*selected = results.keys.associateWith { key ->
-                        (results[key] is FunctionResult.Success)
-                    },*/
+                    selected = visible,
                     best = findBestResult(results),
                     isLoading = isLoading
                 )
@@ -49,17 +46,7 @@ class ResultViewModel : ViewModel(), HaveMessage {
     }
 
     fun tickFunction(functionType: FunctionType) {
-        val check = _resultState.value.results[functionType]
-        if (check == null)
-            showMessage(Defaults.exception(), MessageType.GOOD)
-        else {
-            if (check is FunctionResult.Success) {
-                val selected = _resultState.value.selected.toMutableMap()
-                selected[functionType] = !(selected[functionType] ?: true)
-                _resultState.update { it.copy(selected = selected) }
-            } else
-                showMessage("Не удалось отобразить график", MessageType.ERROR)
-        }
+        MainStore.tickVisible(functionType)
     }
 
     fun calculateResult() {
@@ -68,7 +55,7 @@ class ResultViewModel : ViewModel(), HaveMessage {
             MainStore.startLoading()
             try {
                 val points = Coordinates(MainStore.points.value.toMutableList())
-                val newResults = Defaults.solvers().mapValues { (key, solver) ->
+                val newResults = Defaults.solvers().mapValues { (_, solver) ->
                     try {
                         val function = solver.solve(points)
                         FunctionResult.Success(function, QualityAnalyzer.analise(function, points))
