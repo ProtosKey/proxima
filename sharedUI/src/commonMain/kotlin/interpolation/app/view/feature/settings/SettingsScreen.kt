@@ -1,18 +1,18 @@
 package interpolation.app.view.feature.settings
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import interpolation.app.data.MainStore
+import interpolation.app.presentation.viewmodel.SettingsViewModel
 import interpolation.app.theme.LocalAppDimens
 import interpolation.app.view.component.NavigationBar
 import interpolation.app.view.component.Title
@@ -22,7 +22,9 @@ class SettingsScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val settings by MainStore.settings.collectAsStateWithLifecycle()
+        val viewModel = viewModel<SettingsViewModel>()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+        val settings = state.settings
 
         Scaffold(
             bottomBar = { NavigationBar(navigator) }
@@ -31,25 +33,27 @@ class SettingsScreen : Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = LocalAppDimens.current.paddingMedium),
-                verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingExtraLarge)
+                    .padding(horizontal = LocalAppDimens.current.paddingMedium)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingLarge)
             ) {
                 Title(label = "Настройки")
 
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingMedium)
-                ) {
+                Column(verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingMedium)) {
                     Parameter(
-                        label = settings.isNewPoints.label,
-                        description = settings.isNewPoints.current(),
-                        isChecked = settings.isNewPoints.parameter
-                    ) { MainStore.updateSettingsNewPoints(it) }
+                        setting = settings.mathPrecision,
+                        onSelect = { viewModel.updateMathPrecision(it) }
+                    )
 
                     Parameter(
-                        label = settings.isAutoUpdate.label,
-                        description = settings.isAutoUpdate.current(),
-                        isChecked = settings.isAutoUpdate.parameter
-                    ) { MainStore.updateSettingAutoUpdate(it) }
+                        setting = settings.graphResolution,
+                        onSelect = { viewModel.updateGraphResolution(it) }
+                    )
+
+                    Parameter(
+                        setting = settings.displayPrecision,
+                        onSelect = { viewModel.updateDisplayPrecision(it) }
+                    )
                 }
             }
         }

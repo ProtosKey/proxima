@@ -1,56 +1,102 @@
 package interpolation.app.view.feature.settings.component
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import interpolation.app.data.model.Setting
+import interpolation.app.theme.LocalAppDimens
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Parameter(
-    label: String,
-    description: String,
-    isChecked: Boolean,
-    switch: (Boolean) -> Unit
+    setting: Setting,
+    onSelect: (String) -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+    var expanded by remember { mutableStateOf(false) }
+    val colors = MaterialTheme.colorScheme
 
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingTiny)
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             Text(
-                text = description,
+                text = setting.label,
+                style = MaterialTheme.typography.headlineSmall,
+                color = colors.onSurfaceVariant
+            )
+            Text(
+                text = setting.description,
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = colors.onSurfaceVariant
             )
         }
-        Switch(
-            checked = isChecked,
-            onCheckedChange = switch,
-            modifier = Modifier.scale(0.8f),
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = MaterialTheme.colorScheme.primary,
-                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                checkedBorderColor = MaterialTheme.colorScheme.primary,
 
-                uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                uncheckedTrackColor = MaterialTheme.colorScheme.background,
-                uncheckedBorderColor = MaterialTheme.colorScheme.onSurfaceVariant
+        ExposedDropdownMenuBox(
+            expanded = expanded,
+            onExpandedChange = { expanded = !expanded },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            OutlinedTextField(
+                value = setting.current,
+                onValueChange = {},
+                readOnly = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = colors.onSurfaceVariant
+                ),
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                },
+                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                shape = MaterialTheme.shapes.large,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = colors.outlineVariant,
+                    focusedBorderColor = colors.primary,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                )
             )
-        )
+
+            MaterialTheme(
+                shapes = MaterialTheme.shapes.copy(extraSmall = MaterialTheme.shapes.large)
+            ) {
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    containerColor = colors.surface,
+                    shadowElevation = 0.dp,
+                    tonalElevation = 0.dp,
+                    border = BorderStroke(
+                        LocalAppDimens.current.strokeThin,
+                        colors.outlineVariant
+                    )
+                ) {
+                    setting.options.keys.forEach { optionKey ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = optionKey,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = colors.onSurfaceVariant
+                                )
+                            },
+                            onClick = {
+                                onSelect(optionKey)
+                                expanded = false
+                            },
+                            colors = MenuDefaults.itemColors(
+                                textColor = colors.onSurfaceVariant
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 }
