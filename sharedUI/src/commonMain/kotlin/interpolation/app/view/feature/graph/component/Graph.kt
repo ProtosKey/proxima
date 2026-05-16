@@ -195,7 +195,7 @@ private fun DrawScope.drawGrid(
     stroke: Dp = 1.dp
 ) {
     val horizon = getGripStep((maxHorizon - minHorizon) / 8)
-    val vertical = getGripStep((maxVertical - minVertical) / 8)
+    val vertical = getGripStep((maxVertical - minVertical) / 16)
 
     var current = floor(minHorizon / horizon) * horizon
     while (current <= maxHorizon + horizon) {

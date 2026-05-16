@@ -62,7 +62,8 @@ class GraphScreen : Screen {
                     message = message.message,
                     isVisible = message.isVisible,
                     onClick = { viewModel.hideMessage() },
-                    bottom = 0.dp
+                    bottom = 0.dp,
+                    type = message.messageType
                 )
             }
         }

@@ -121,12 +121,12 @@ class InputScreen : Screen {
                     }
                 }
 
-
                 Message(
                     message = message.message,
                     isVisible = message.isVisible,
                     onClick = { viewModel.hideMessage() },
-                    bottom = height
+                    bottom = height,
+                    type = message.messageType
                 )
             }
         }

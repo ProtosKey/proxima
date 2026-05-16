@@ -12,22 +12,24 @@ import interpolation.app.presentation.basic.HaveMessage
 import interpolation.app.presentation.mapper.DataMapper
 import interpolation.app.presentation.model.PointData
 import interpolation.app.presentation.state.GraphState
-import interpolation.app.presentation.state.Viewport
 import interpolation.app.presentation.tools.FastCalculator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class GraphViewModel : ViewModel(), HaveMessage {
     companion object {
-        private const val CURVE_POINTS = 300
+        private const val CURVE_POINTS = 500
     }
 
+    private var messageJob: Job? = null
+    private var rangeJob: Job? = null
     private val _graphState = MutableStateFlow(GraphState())
     val graphState = _graphState.asStateFlow()
     val notification = MainStore.notification
@@ -35,30 +37,14 @@ class GraphViewModel : ViewModel(), HaveMessage {
     init {
         combine(
             MainStore.points,
-            MainStore.results,
             MainStore.visibleResults
-        ) { points, results, visible ->
+        ) { points, visible ->
             val pointData = points.map(DataMapper::mapTo)
-            val viewport = calcViewport(pointData)
-
-            val curves = withContext(Dispatchers.Default) {
-                results
-                    .filterValues { it is FunctionResult.Success }
-                    .mapValues { (_, result) ->
-                        buildCurves(
-                            function = (result as FunctionResult.Success).function,
-                            left = viewport.left,
-                            right = viewport.right
-                        )
-                    }
-            }
 
             _graphState.update {
                 it.copy(
                     points = pointData,
-                    graph = curves,
                     canAdd = points.size < Coordinates.MAX_SIZE,
-                    viewport = viewport,
                     visible = visible,
                     theBest = findBestResult(MainStore.results.value)
                 )
@@ -74,55 +60,24 @@ class GraphViewModel : ViewModel(), HaveMessage {
         }?.key
     }
 
-    private fun calcViewport(points: List<PointData>): Viewport {
-        if (points.isEmpty()) return Viewport()
-
-        val horizon = points.minOf { it.x }
-        val maxHorizon = points.maxOf { it.x }
-        val vertical = points.minOf { it.y }
-        val maxVertical = points.maxOf { it.y }
-
-        val paddingHorizon = (maxHorizon - horizon).coerceAtLeast(1f) * .1f
-        val paddingVertical = (maxVertical - vertical).coerceAtLeast(1f) * .1f
-
-        return Viewport(
-            horizon = horizon - paddingHorizon,
-            maxHorizon = maxHorizon + paddingHorizon,
-            vertical = vertical - paddingVertical,
-            maxVertical = maxVertical + paddingVertical
-        )
-    }
-
     fun updateVisible(
         left: Float,
         right: Float,
-        bottom: Float,
-        top: Float
     ) {
-        viewModelScope.launch(Dispatchers.Default) {
-            val viewport = Viewport(
-                horizon = left,
-                maxHorizon = right,
-                vertical = bottom,
-                maxVertical = top
-            )
-
+        rangeJob?.cancel()
+        rangeJob = viewModelScope.launch(Dispatchers.Default) {
             val results = MainStore.results.value
             val curves = results
                 .filterValues { it is FunctionResult.Success }
                 .mapValues { (_, result) ->
                     buildCurves(
                         function = (result as FunctionResult.Success).function,
-                        left = viewport.left,
-                        right = viewport.right
+                        left = left - (right - left),
+                        right = right + (right - left)
                     )
                 }
-            _graphState.update {
-                it.copy(
-                    graph = curves,
-                    viewport = viewport
-                )
-            }
+
+            _graphState.update { it.copy(graph = curves) }
         }
     }
 
@@ -153,6 +108,12 @@ class GraphViewModel : ViewModel(), HaveMessage {
                 )
             }
             MainStore.updatePoints(MainStore.points.value + point)
+            if (MainStore.points.value.size == Coordinates.MAX_SIZE) {
+                showMessage(
+                    "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
+                    MessageType.WARNING
+                )
+            }
         } else {
             showMessage(
                 "Превышено допустимое количество точек в ${Coordinates.MAX_SIZE} единиц",
@@ -162,10 +123,24 @@ class GraphViewModel : ViewModel(), HaveMessage {
     }
 
     override fun hideMessage() {
+        messageJob?.cancel()
         MainStore.hideMessage()
     }
 
     override fun showMessage(message: String, messageType: MessageType) {
-        MainStore.showMessage(message, messageType)
+        messageJob?.cancel()
+        messageJob = viewModelScope.launch {
+            if (MainStore.notification.value.isVisible) {
+                MainStore.hideMessage()
+                delay(250)
+            }
+            MainStore.showMessage(message, messageType)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        messageJob?.cancel()
+        rangeJob?.cancel()
     }
 }

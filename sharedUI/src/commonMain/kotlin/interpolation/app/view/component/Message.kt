@@ -16,16 +16,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Message
+import interpolation.app.data.model.FunctionType
+import interpolation.app.data.model.MessageType
 import interpolation.app.data.utils.Defaults
 import interpolation.app.theme.LocalAppDimens
 
@@ -34,8 +40,34 @@ fun BoxScope.Message(
     message: String? = null,
     isVisible: Boolean = false,
     onClick: () -> Unit,
-    bottom: Dp = 0.dp
+    bottom: Dp = 0.dp,
+    type: MessageType = MessageType.ERROR
 ) {
+    val colorScheme = MaterialTheme.colorScheme
+    val containerColor = remember(type, colorScheme) {
+        when (type) {
+            MessageType.ERROR -> colorScheme.errorContainer
+            MessageType.WARNING -> colorScheme.tertiaryContainer
+            MessageType.GOOD -> colorScheme.secondaryContainer
+        }
+    }
+
+    val textColor = remember(type, colorScheme) {
+        when (type) {
+            MessageType.ERROR -> colorScheme.onErrorContainer
+            MessageType.WARNING -> colorScheme.onTertiaryContainer
+            MessageType.GOOD -> colorScheme.onSecondaryContainer
+        }
+    }
+
+    val icon = remember(type) {
+        when (type) {
+            MessageType.ERROR -> Icons.Default.ErrorOutline
+            MessageType.WARNING -> Icons.Default.Info
+            MessageType.GOOD -> Icons.Default.CheckCircleOutline
+        }
+    }
+
     AnimatedVisibility(
         visible = isVisible && message != null,
         enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
@@ -63,7 +95,7 @@ fun BoxScope.Message(
                     .fillMaxWidth()
                     .clickable { onClick() },
                 shape = RoundedCornerShape(LocalAppDimens.current.radiusMedium),
-                color = MaterialTheme.colorScheme.errorContainer,
+                color = containerColor,
                 tonalElevation = 4.dp
             ) {
                 Row(
@@ -72,14 +104,14 @@ fun BoxScope.Message(
                     horizontalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingSmall)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ErrorOutline,
+                        imageVector = icon,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onErrorContainer
+                        tint = textColor
                     )
                     Text(
                         text = message ?: Defaults.exception(),
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        color = textColor,
                         modifier = Modifier.weight(1f)
                     )
                 }

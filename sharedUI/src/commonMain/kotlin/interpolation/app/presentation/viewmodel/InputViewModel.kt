@@ -11,14 +11,18 @@ import interpolation.app.presentation.exception.ModelException
 import interpolation.app.presentation.mapper.EntryMapper
 import interpolation.app.presentation.model.PointEntry
 import interpolation.app.presentation.state.InputState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class InputViewModel : ViewModel(), HaveMessage {
     private val _inputState = MutableStateFlow(InputState())
+    private var messageJob: Job? = null
     val inputState = _inputState.asStateFlow()
     val notification = MainStore.notification
 
@@ -37,11 +41,19 @@ class InputViewModel : ViewModel(), HaveMessage {
     }
 
     override fun hideMessage() {
+        messageJob?.cancel()
         MainStore.hideMessage()
     }
 
     override fun showMessage(message: String, messageType: MessageType) {
-        MainStore.showMessage(message, messageType)
+        messageJob?.cancel()
+        messageJob = viewModelScope.launch {
+            if (MainStore.notification.value.isVisible) {
+                MainStore.hideMessage()
+                delay(250)
+            }
+            MainStore.showMessage(message, messageType)
+        }
     }
 
     fun updatePoint(index: Int, x: String, y: String) {
@@ -67,6 +79,12 @@ class InputViewModel : ViewModel(), HaveMessage {
                 )
             }
             MainStore.updatePoints(MainStore.points.value + point)
+            if (MainStore.points.value.size == Coordinates.MAX_SIZE) {
+                showMessage(
+                    "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
+                    MessageType.WARNING
+                )
+            }
         } else {
             showMessage(
                 "Превышено допустимое количество точек в ${Coordinates.MAX_SIZE} единиц",
@@ -102,5 +120,10 @@ class InputViewModel : ViewModel(), HaveMessage {
     private fun checkIndex(index: Int) {
         if (index < 0 || index >= _inputState.value.input.size)
             throw ModelException("Точки с таким индексом не существует")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        messageJob?.cancel()
     }
 }
