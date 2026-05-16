@@ -63,23 +63,21 @@ object MainStore {
         }
     }
 
-    fun updateSettingsNewPoints(isNewPoints: Boolean) {
+    fun updateMathPrecision(key: String) {
         _settings.update {
-            it.copy(
-                isNewPoints = it.isNewPoints.copy(
-                    parameter = isNewPoints
-                )
-            )
+            it.copy(mathPrecision = it.mathPrecision.copy(current = key))
         }
     }
 
-    fun updateSettingAutoUpdate(isAutoUpdate: Boolean) {
+    fun updateGraphResolution(key: String) {
         _settings.update {
-            it.copy(
-                isAutoUpdate = it.isAutoUpdate.copy(
-                    parameter = isAutoUpdate
-                )
-            )
+            it.copy(graphResolution = it.graphResolution.copy(current = key))
+        }
+    }
+
+    fun updateDisplayPrecision(key: String) {
+        _settings.update {
+            it.copy(displayPrecision = it.displayPrecision.copy(current = key))
         }
     }
 

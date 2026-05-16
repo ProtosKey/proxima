@@ -1,35 +1,48 @@
 package interpolation.app.data.model
 
-import interpolation.app.data.utils.Defaults
-
 data class Settings(
-    val isNewPoints: Setting = Setting(
-        parameter = Defaults.newPoint(),
-        label = "Переполнение точек",
-        Pair(
-            "При переполнении точек самая старая точка будет удалена",
-            "При переполнении точек будет выброшена ошибка"
-        )
-    ),
-    val isAutoUpdate: Setting = Setting(
-        parameter = Defaults.autoUpdate(),
-        label = "Автообновление результата",
-        description = Pair(
-            "Результат обновляется при изменении точек",
-            "Результат обновляется только по кнопке"
+    val mathPrecision: Setting = Setting(
+        current = "Стандартная",
+        options = mapOf(
+            "Низкая" to "16",
+            "Стандартная" to "32",
+            "Высокая" to "64",
+            "Научная" to "128"
         ),
+        label = "Точность вычислений",
+        description = "Количество значащих разрядов вычислений"
+    ),
+    val graphResolution: Setting = Setting(
+        current = "Оптимальное",
+        options = mapOf(
+            "Производительное" to "50",
+            "Оптимальное" to "250",
+            "Высокое" to "1000",
+            "Максимальное" to "2000"
+        ),
+        label = "Разрешение графика",
+        description = "Количество точек для отрисовки кривой"
+    ),
+    val displayPrecision: Setting = Setting(
+        current = "5 знаков",
+        options = mapOf(
+            "2 знака" to "2",
+            "3 знака" to "3",
+            "4 знака" to "4",
+            "5 знаков" to "5",
+            "8 знаков" to "8",
+            "10 знаков" to "10"
+        ),
+        label = "Точность вывода",
+        description = "Знаков после запятой в уравнениях"
     )
 )
 
 data class Setting(
-    val parameter: Boolean,
+    val current: String,
+    val options: Map<String, String>,
     val label: String,
-    val description: Pair<String, String>
+    val description: String
 ) {
-    fun current(): String {
-        return if (parameter)
-            description.first
-        else
-            description.second
-    }
+    fun value(): String = options[current] ?: options.values.first()
 }
