@@ -55,10 +55,10 @@ class ResultViewModel : ViewModel(), HaveMessage {
             } else
                 showMessage("Не удалось отобразить график", MessageType.ERROR)
         }
-
     }
 
     fun calculateResult() {
+        if (_resultState.value.isLoading) return
         viewModelScope.launch(Dispatchers.Default) {
             _resultState.update { it.copy(isLoading = true) }
             try {
