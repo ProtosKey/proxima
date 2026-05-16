@@ -36,7 +36,7 @@ fun FunctionLabel(
         Row(
             modifier = Modifier.weight(1f),
             horizontalArrangement = Arrangement.spacedBy(
-                LocalAppDimens.current.paddingSmall
+                LocalAppDimens.current.paddingTiny
             )
         ) {
             Text(
