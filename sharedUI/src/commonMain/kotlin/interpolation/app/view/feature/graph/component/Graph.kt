@@ -1,6 +1,7 @@
 package interpolation.app.view.feature.graph.component
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,22 +14,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import interpolation.app.data.model.FunctionType
 import interpolation.app.presentation.state.GraphState
-import kotlin.collections.associateWith
+import kotlinx.coroutines.delay
 import kotlin.math.*
 
 @Composable
 fun Graph(
     state: GraphState,
     onClick: (x: Float, y: Float) -> Unit,
-    onRange: (minX: Float, maxX: Float, minY: Float, maxY: Float) -> Unit,
+    onRange: (minX: Float, maxX: Float) -> Unit,
     modifier: Modifier = Modifier,
     theBest: FunctionType?
 ) {
@@ -52,8 +56,35 @@ fun Graph(
         }
     }
 
+    var minHor by remember { mutableStateOf(-10f) }
+    var maxHor by remember { mutableStateOf(10f) }
+    var minVer by remember { mutableStateOf(-10f) }
+    var maxVer by remember { mutableStateOf(10f) }
+
     var zoom by remember { mutableStateOf(1f) }
     var panOffset by remember { mutableStateOf(Offset.Zero) }
+    var canvasSize by remember { mutableStateOf(Offset(1f, 1f)) }
+
+    val padding = 80f
+
+    fun toMath(offset: Offset): Offset {
+        val dw = canvasSize.x - padding * 2
+        val dh = canvasSize.y - padding * 2
+        val mx = ((offset.x - panOffset.x) / zoom - padding) / dw * (maxHor - minHor) + minHor
+        val my = maxVer - (((offset.y - panOffset.y) / zoom - padding) / dh * (maxVer - minVer))
+        return Offset(mx, my)
+    }
+
+    LaunchedEffect(zoom, panOffset, canvasSize, minHor, maxHor) {
+        delay(50)
+        val topLeft = toMath(Offset.Zero)
+        val bottomRight = toMath(canvasSize)
+        onRange(
+            min(topLeft.x, bottomRight.x),
+            max(topLeft.x, bottomRight.x),
+        )
+    }
+
     val transformableState = rememberTransformableState { zoomChange, panChange, _ ->
         zoom = (zoom * zoomChange).coerceIn(0.1f, 30f)
         panOffset += panChange
@@ -64,54 +95,45 @@ fun Graph(
         color = colors.onSurfaceVariant.copy(alpha = 0.5f),
         fontSize = MaterialTheme.typography.bodySmall.fontSize
     )
-
     val axisLabelStyle = TextStyle(
         color = colors.onSurfaceVariant, fontSize = MaterialTheme.typography.bodyLarge.fontSize
     )
 
     Canvas(
-        modifier = modifier.fillMaxSize().clipToBounds().transformable(transformableState)
+        modifier = modifier
+            .fillMaxSize()
+            .clipToBounds()
+            .onGloballyPositioned {
+                canvasSize = Offset(it.size.width.toFloat(), it.size.height.toFloat())
+            }
+            .pointerInput(zoom, panOffset, canvasSize, minHor, maxHor) {
+                detectTapGestures { tapOffset ->
+                    val pos = toMath(tapOffset)
+                    onClick(pos.x, pos.y)
+                }
+            }
+            .transformable(transformableState)
     ) {
-        val padding = 80f
         val drawWidth = size.width - padding * 2
         val drawHeight = size.height - padding * 2
 
-        val view = state.viewport
-        val mathWidth = (view.maxHorizon - view.horizon).coerceAtLeast(0.1f)
-        val mathHeight = (view.maxVertical - view.vertical).coerceAtLeast(0.1f)
-
         fun toOffset(mathX: Float, mathY: Float): Offset {
-            val xProgress = (mathX - view.horizon) / mathWidth
-            val yProgress = (view.maxVertical - mathY) / mathHeight
-            return Offset(
-                x = (padding + xProgress * drawWidth) * zoom + panOffset.x,
-                y = (padding + yProgress * drawHeight) * zoom + panOffset.y
-            )
+            val xProgress = (mathX - minHor) / (maxHor - minHor)
+            val yProgress = (maxVer - mathY) / (maxVer - minVer)
+            val base = Offset(padding + xProgress * drawWidth, padding + yProgress * drawHeight)
+            return base * zoom + panOffset
         }
 
-        fun toMath(offset: Offset): Offset {
-            val mx =
-                ((offset.x - panOffset.x) / zoom - padding) / drawWidth * mathWidth + view.horizon
-            val my =
-                view.maxVertical - (((offset.y - panOffset.y) / zoom - padding) / drawHeight * mathHeight)
-            return Offset(mx, my)
-        }
-
-        val visibleTopLeft = toMath(Offset.Zero)
-        val visibleBottomRight = toMath(Offset(size.width, size.height))
-
-        val minVisibleX = min(visibleTopLeft.x, visibleBottomRight.x)
-        val maxVisibleX = max(visibleTopLeft.x, visibleBottomRight.x)
-        val minVisibleY = min(visibleTopLeft.y, visibleBottomRight.y)
-        val maxVisibleY = max(visibleTopLeft.y, visibleBottomRight.y)
+        val topLeftM = toMath(Offset.Zero)
+        val bottomRightM = toMath(Offset(size.width, size.height))
 
         val zeroPos = toOffset(0f, 0f)
 
         drawGrid(
-            minHorizon = minVisibleX,
-            maxHorizon = maxVisibleX,
-            minVertical = minVisibleY,
-            maxVertical = maxVisibleY,
+            minHorizon = min(topLeftM.x, bottomRightM.x),
+            maxHorizon = max(topLeftM.x, bottomRightM.x),
+            minVertical = min(topLeftM.y, bottomRightM.y),
+            maxVertical = max(topLeftM.y, bottomRightM.y),
             color = colors.outlineVariant.copy(alpha = .4f),
             measurer = textMeasurer,
             style = labelStyle,
@@ -129,7 +151,7 @@ fun Graph(
         )
 
         drawText(textMeasurer, "Y", Offset(zeroPos.x + 10f, 10f), axisLabelStyle)
-        drawText(textMeasurer, "X", Offset(size.width - 30f, zeroPos.y - 50f), axisLabelStyle)
+        drawText(textMeasurer, "X", Offset(size.width - 40f, zeroPos.y - 55f), axisLabelStyle)
 
         state.graph.filter { (key, _) ->
             (state.visible[key] ?: false)
@@ -138,10 +160,11 @@ fun Graph(
             var first = true
             points.forEach { p ->
                 val pos = toOffset(p.x, p.y)
-                if (pos.x in -1000f..size.width + 1000f && pos.y in -1000f..size.height + 1000f) {
-                    if (first) path.moveTo(pos.x, pos.y) else path.lineTo(pos.x, pos.y)
-                    first = false
-                }
+                if (first)
+                    path.moveTo(pos.x, pos.y)
+                else
+                    path.lineTo(pos.x, pos.y)
+                first = false
             }
             drawPath(
                 path = path,
@@ -168,13 +191,13 @@ private fun DrawScope.drawGrid(
     color: Color,
     measurer: TextMeasurer,
     style: TextStyle,
-    offset: (Float, Float) -> Offset
+    offset: (Float, Float) -> Offset,
+    stroke: Dp = 1.dp
 ) {
-    val horizon = getGripStep((maxHorizon - minHorizon) / 6)
-    val vertical = getGripStep((maxVertical - minVertical) / 6)
+    val horizon = getGripStep((maxHorizon - minHorizon) / 8)
+    val vertical = getGripStep((maxVertical - minVertical) / 8)
 
-    val start = floor(minHorizon / horizon) * horizon
-    var current = start
+    var current = floor(minHorizon / horizon) * horizon
     while (current <= maxHorizon + horizon) {
         val value = offset(current, 0f).x
         if (value in 0f..size.width) {
@@ -182,7 +205,7 @@ private fun DrawScope.drawGrid(
                 color = color,
                 start = Offset(value, 0f),
                 end = Offset(value, size.height),
-                strokeWidth = 1.dp.toPx()
+                strokeWidth = stroke.toPx()
             )
             drawText(
                 textMeasurer = measurer,
@@ -194,13 +217,15 @@ private fun DrawScope.drawGrid(
         current += horizon
     }
 
-    val startVertical = floor(minVertical / vertical) * vertical
-    var currentVertical = startVertical
+    var currentVertical = floor(minVertical / vertical) * vertical
     while (currentVertical <= maxVertical + vertical) {
         val canvasY = offset(0f, currentVertical).y
         if (canvasY in 0f..size.height) {
             drawLine(
-                color = color, Offset(0f, canvasY), Offset(size.width, canvasY), 1.dp.toPx()
+                color = color,
+                start = Offset(0f, canvasY),
+                end = Offset(size.width, canvasY),
+                strokeWidth = stroke.toPx()
             )
             drawText(
                 textMeasurer = measurer,
@@ -227,9 +252,6 @@ private fun getGripStep(step: Float): Float {
 
 private fun format(value: Float): String {
     if (abs(value) < 1e-5) return "0"
-    return if (value == floor(value.toDouble()).toFloat()) {
-        value.toInt().toString()
-    } else {
-        (round(value * 100) / 100.0).toString()
-    }
+    return if (value == value.toInt().toFloat()) value.toInt().toString()
+    else (round(value * 100) / 100.0).toString()
 }

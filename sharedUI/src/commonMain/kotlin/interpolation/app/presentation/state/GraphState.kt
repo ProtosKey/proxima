@@ -9,15 +9,4 @@ data class GraphState(
     val graph: Map<FunctionType, List<PointData>> = emptyMap(),
     val canAdd: Boolean = false,
     val theBest: FunctionType? = null,
-    val viewport: Viewport = Viewport()
 )
-
-data class Viewport(
-    val horizon: Float = 0f,
-    val maxHorizon: Float = 1f,
-    val vertical: Float = 0f,
-    val maxVertical: Float = 1f
-) {
-    val left get() = horizon - (maxHorizon - horizon)
-    val right get() = maxHorizon + (maxHorizon - horizon)
-}
