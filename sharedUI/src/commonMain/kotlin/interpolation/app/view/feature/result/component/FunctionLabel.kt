@@ -2,8 +2,10 @@ package interpolation.app.view.feature.result.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Icon
@@ -15,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import interpolation.app.data.model.FunctionType
+import interpolation.app.theme.LocalAppDimens
 
 @Composable
 fun FunctionLabel(
@@ -22,21 +25,35 @@ fun FunctionLabel(
     color: Color,
     type: FunctionType,
     onHide: (type: FunctionType) -> Unit,
-    isVisible: Boolean
+    isVisible: Boolean,
+    isTheBest: Boolean = false
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.titleMedium,
-            color = color,
-            modifier = Modifier.weight(1f)
-        )
+        Row(
+            modifier = Modifier.weight(1f),
+            horizontalArrangement = Arrangement.spacedBy(
+                LocalAppDimens.current.paddingSmall
+            )
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium,
+                color = color,
+            )
 
-        println(isVisible)
+            if (isTheBest) {
+                Icon(
+                    modifier = Modifier.fillMaxHeight(),
+                    imageVector = Icons.Default.Star,
+                    contentDescription = "Лучшее приближение",
+                    tint = MaterialTheme.colorScheme.primary,
+                )
+            }
+        }
 
         IconButton(onClick = { onHide(type) }) {
             Icon(

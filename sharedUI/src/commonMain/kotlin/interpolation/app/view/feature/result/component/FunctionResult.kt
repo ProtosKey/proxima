@@ -45,7 +45,7 @@ fun FunctionResult(latex: String, copy: String = latex) {
         shape = RoundedCornerShape(dimens.radiusMedium),
         border = BorderStroke(
             width = dimens.strokeThin,
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.outlineVariant
         ),
         color = surfaceColor
     ) {
@@ -69,7 +69,8 @@ fun FunctionResult(latex: String, copy: String = latex) {
                         )
                     }
                     .horizontalScroll(scroll)
-                    .padding(horizontal = dimens.paddingMedium, vertical = dimens.paddingMedium),
+                    .padding(horizontal = dimens.paddingMedium, vertical = dimens.paddingMedium)
+                    .padding(end = LocalAppDimens.current.paddingLarge),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Latex(

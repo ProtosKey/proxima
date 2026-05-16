@@ -18,7 +18,7 @@ fun MetricResult(label: String, value: String, modifier: Modifier) {
     OutlinedCard(
         modifier = modifier.fillMaxWidth(),
         border = BorderStroke(
-            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+            color = MaterialTheme.colorScheme.outlineVariant,
             width = LocalAppDimens.current.strokeThin,
         ),
         shape = RoundedCornerShape(LocalAppDimens.current.radiusMedium),

@@ -4,14 +4,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -47,7 +43,7 @@ fun ResultLabel(
     } else {
         BorderStroke(
             LocalAppDimens.current.strokeThin,
-            MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+            MaterialTheme.colorScheme.outlineVariant
         )
     }
 
@@ -92,16 +88,8 @@ fun ResultLabel(
                             type = type,
                             onHide = onHide,
                             isVisible = isVisible,
+                            isTheBest = isTheBest
                         )
-
-                        if (isTheBest) {
-                            Icon(
-                                modifier = Modifier.fillMaxHeight(),
-                                imageVector = Icons.Default.Star,
-                                contentDescription = "Лучшее приближение",
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
                     }
 
                     FunctionResult(
