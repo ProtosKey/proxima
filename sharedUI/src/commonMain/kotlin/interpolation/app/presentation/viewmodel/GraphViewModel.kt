@@ -34,7 +34,6 @@ class GraphViewModel : ViewModel(), HaveMessage {
 
     init {
         MainStore.settings.onEach { settings ->
-            println(settings.graphResolution.value.toInt())
             curvePoints = settings.graphResolution.value.toInt()
         }.launchIn(viewModelScope)
 

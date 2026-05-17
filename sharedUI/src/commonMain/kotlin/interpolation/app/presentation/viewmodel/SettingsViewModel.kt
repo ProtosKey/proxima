@@ -15,7 +15,6 @@ class SettingsViewModel : ViewModel() {
     val state = _state.asStateFlow()
 
     init {
-
         MainStore.settings.onEach { currentSettings ->
             _state.update { it.copy(settings = currentSettings) }
         }.launchIn(viewModelScope)

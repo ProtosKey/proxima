@@ -16,6 +16,7 @@ import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.precision.QualityAnalyzer
 import interpolation.app.presentation.basic.HaveMessage
 import interpolation.app.presentation.state.ResultState
+import interpolation.app.presentation.tools.FunctionFormatter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,8 +32,9 @@ class ResultViewModel : ViewModel(), HaveMessage {
 
     init {
         MainStore.settings.onEach { settings ->
-            println(settings.mathPrecision.value.toInt())
-            _resultState.update { it.copy(count = settings.mathPrecision.value.toLong()) }
+            _resultState.update { it.copy(
+                count = settings.mathPrecision.value.toLong(),
+                formatter = FunctionFormatter(settings.displayPrecision.value.toInt())) }
         }.launchIn(viewModelScope)
 
         combine(
