@@ -1,5 +1,7 @@
-## Unreleased (a1e4c24..1b76192)
+## Unreleased (a1e4c24..b764fdc)
 #### Features
+- removed minimum points from input page, viewmodel, state - (7a524fe) - Rinat
+- added start screen to ios - (c30e4b9) - Rinat
 - added ios support - (19f284a) - Rinat
 - added scroll in metrics label, signes fixed - (ffa827a) - Rinat
 - added formatter to result view model - (c844b4d) - Rinat
@@ -96,7 +98,10 @@
 - added interface for mapper - (8571631) - Rinat
 - determination function and exponent solver calc fixed - (8ff6783) - Rinat
 - now functions clearly know their size - (bc34489) - Rinat
+#### Performance Improvements
+- perfomance issues with scrolling fixed - (b6137aa) - Rinat
 #### Documentation
+- added ios to readme - (b764fdc) - Rinat
 - removed vico from readme - (570a9a6) - Rinat
 - docs fixed - (580a2ee) - Rinat
 - added readme docs - (b15b3d4) - Rinat
@@ -122,9 +127,11 @@
 - point labels removed, entry fixed - (bfc0fe2) - Rinat
 - now parser use mappers - (98eeeef) - Rinat
 - removed unused methods in functions - (26127db) - Rinat
+#### Miscellaneous Chores
+- added changelog - (74efaf1) - Rinat
 #### Style
+- package naming changed - (f2ba889) - Rinat
 - added icon to ios, icon in android fixed - (1b76192) - Rinat
 - added icon to android - (83b01cf) - Rinat
-
 
 
