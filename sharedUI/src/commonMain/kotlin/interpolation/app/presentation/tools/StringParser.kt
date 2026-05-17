@@ -8,8 +8,6 @@ import kotlin.math.min
 object StringParser {
     private val ZEROS = "0*$".toRegex()
     private val EXTRA = "\\.$".toRegex()
-    private val ZERO_EPSILON = "1E-79".toBigDecimal()
-    private const val DEFAULT_BODY = "Начните работу..."
 
     fun prepareToString(number: BigDecimal, sign: Int = -1): String {
         val result = prepareNumber(number.toPlainString())
@@ -67,15 +65,5 @@ object StringParser {
         return value
             .replace(ZEROS, "")
             .replace(EXTRA, "")
-    }
-
-    fun checkZero(value: BigDecimal): BigDecimal {
-        return if ((value).abs() < ZERO_EPSILON) BigDecimal.ZERO else value
-    }
-
-    fun prepareFunction(body: String): String {
-        return body.ifEmpty {
-            DEFAULT_BODY
-        }
     }
 }
