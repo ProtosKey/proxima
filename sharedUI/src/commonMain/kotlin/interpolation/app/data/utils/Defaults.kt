@@ -19,10 +19,6 @@ import kotlin.random.Random
 object Defaults {
     private const val POINT_COUNT = 3
 
-    fun newPoint(): Boolean = true
-
-    fun autoUpdate(): Boolean = false
-
     fun exception(): String = "Неожиданная ошибка"
 
     fun message(): String = "Начните работу..."
@@ -51,6 +47,6 @@ object Defaults {
 
     private fun randomBigDecimal(): BigDecimal {
         return Random.nextInt(1100).toBigDecimal()
-            .divide("100".toBigDecimal(), DecimalUtils.DIVIDE_MODE)
+            .divide("100".toBigDecimal(), DecimalUtils.getMode(2L))
     }
 }

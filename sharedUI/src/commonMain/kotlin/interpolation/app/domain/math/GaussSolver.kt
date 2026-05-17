@@ -6,7 +6,8 @@ import interpolation.app.domain.exception.SolverException
 object GaussSolver {
     fun solveSystem(
         params: MutableList<MutableList<BigDecimal>>,
-        vector: MutableList<BigDecimal>
+        vector: MutableList<BigDecimal>,
+        count: Long
     ): List<BigDecimal> {
         if (params.any { list -> list.size != params.size } || params.size != vector.size) {
             throw SolverException("Неверная система линейных уравнений")
@@ -34,7 +35,7 @@ object GaussSolver {
 
             for (k in i + 1 until size) {
                 val c = params[k][i].divide(
-                    params[i][i], DecimalUtils.DIVIDE_MODE
+                    params[i][i], DecimalUtils.getMode(count)
                 )
                 addMultiplyRow(params, vector, c, i, k);
             }
@@ -48,7 +49,7 @@ object GaussSolver {
             }
 
             val a = params[i][i]
-            solution.add((vector[i] - s).divide(a, DecimalUtils.DIVIDE_MODE))
+            solution.add((vector[i] - s).divide(a, DecimalUtils.getMode(count)))
         }
         return solution.reversed()
     }

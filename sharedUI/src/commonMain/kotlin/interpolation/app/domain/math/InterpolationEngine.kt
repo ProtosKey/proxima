@@ -6,7 +6,7 @@ import interpolation.app.domain.model.Coordinates.Companion.MAX_SIZE
 import interpolation.app.domain.model.Coordinates.Companion.MIN_SIZE
 
 internal object InterpolationEngine {
-    fun calculate(x: List<BigDecimal>, y: List<BigDecimal>, size: Int): List<BigDecimal> {
+    fun calculate(x: List<BigDecimal>, y: List<BigDecimal>, size: Int, count: Long): List<BigDecimal> {
         if (x.size != y.size) {
             throw EngineException("Неверное количество точек")
         } else if (x.size !in MIN_SIZE..MAX_SIZE) {
@@ -33,6 +33,6 @@ internal object InterpolationEngine {
             }
         }
 
-        return GaussSolver.solveSystem(params, vector)
+        return GaussSolver.solveSystem(params, vector, count)
     }
 }

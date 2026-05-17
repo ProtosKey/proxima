@@ -8,12 +8,12 @@ import interpolation.app.domain.math.DecimalUtils
 import interpolation.app.domain.math.sqrt
 
 object Pearson {
-    fun calcPearson(points: Coordinates): BigDecimal {
+    fun calcPearson(points: Coordinates, count: Long): BigDecimal {
         var lat = BigDecimal.ZERO
         var lon = BigDecimal.ZERO
         points.forEach { point -> lat += point.x; lon += point.y }
-        lat = lat.divide(points.size.toBigDecimal(), DecimalUtils.DIVIDE_MODE)
-        lon = lon.divide(points.size.toBigDecimal(), DecimalUtils.DIVIDE_MODE)
+        lat = lat.divide(points.size.toBigDecimal(), DecimalUtils.getMode(count))
+        lon = lon.divide(points.size.toBigDecimal(), DecimalUtils.getMode(count))
 
         var top = BigDecimal.ZERO
         points.forEach { point -> top += (point.x - lat) * (point.y - lon) }
@@ -30,8 +30,8 @@ object Pearson {
             throw PrecisionException("Не удалось посчитать коэффициент Пирсона")
         } else {
             top.divide(
-                (first * second).sqrt(DecimalUtils.DIVIDE_MODE),
-                DecimalUtils.DIVIDE_MODE
+                (first * second).sqrt(DecimalUtils.getMode(count)),
+                DecimalUtils.getMode(count)
             )
         }
     }

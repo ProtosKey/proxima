@@ -11,7 +11,7 @@ import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.model.Function
 
 object PowerSolver : CanSolve {
-    override fun solve(points: Coordinates): Function {
+    override fun solve(points: Coordinates, count: Long): Function {
         val lat = mutableListOf<BigDecimal>()
         val lon = mutableListOf<BigDecimal>()
 
@@ -20,11 +20,11 @@ object PowerSolver : CanSolve {
                 throw SolverException("Аргумент должен быть положительным")
             }
 
-            lat.add(point.x.ln(DecimalUtils.DIVIDE_MODE))
-            lon.add(point.y.ln(DecimalUtils.DIVIDE_MODE))
+            lat.add(point.x.ln(DecimalUtils.getMode(count)))
+            lon.add(point.y.ln(DecimalUtils.getMode(count)))
         }
 
-        val result = InterpolationEngine.calculate(lat, lon, Function.Power.size)
-        return Function.Power(result[0].exp(DecimalUtils.DIVIDE_MODE), result[1])
+        val result = InterpolationEngine.calculate(lat, lon, Function.Power.size, count)
+        return Function.Power(result[0].exp(DecimalUtils.getMode(count)), result[1])
     }
 }

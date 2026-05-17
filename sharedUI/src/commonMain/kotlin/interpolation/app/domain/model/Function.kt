@@ -11,7 +11,7 @@ import interpolation.app.domain.math.ln
 import interpolation.app.domain.math.pow
 
 sealed class Function : CanVisit {
-    abstract fun calculate(value: BigDecimal): BigDecimal
+    abstract fun calculate(value: BigDecimal, count: Long): BigDecimal
 
     class Linear(
         private val a: BigDecimal,
@@ -21,7 +21,7 @@ sealed class Function : CanVisit {
             override val size = 2
         }
 
-        override fun calculate(value: BigDecimal): BigDecimal {
+        override fun calculate(value: BigDecimal, count: Long): BigDecimal {
             return value * a + b
         }
 
@@ -41,7 +41,7 @@ sealed class Function : CanVisit {
             override val size = 3
         }
 
-        override fun calculate(value: BigDecimal): BigDecimal {
+        override fun calculate(value: BigDecimal, count: Long): BigDecimal {
             return a * value.pow(2) + b * value + c
         }
 
@@ -62,7 +62,7 @@ sealed class Function : CanVisit {
             override val size = 4
         }
 
-        override fun calculate(value: BigDecimal): BigDecimal {
+        override fun calculate(value: BigDecimal, count: Long): BigDecimal {
             return a * value.pow(3) + b * value.pow(2) + c * value + d
         }
 
@@ -81,8 +81,8 @@ sealed class Function : CanVisit {
             override val size = 2
         }
 
-        override fun calculate(value: BigDecimal): BigDecimal {
-            return a * (b * value).exp(DecimalUtils.DIVIDE_MODE)
+        override fun calculate(value: BigDecimal, count: Long): BigDecimal {
+            return a * (b * value).exp(DecimalUtils.getMode(count))
         }
 
         override fun <R> acceptVisitor(
@@ -100,11 +100,11 @@ sealed class Function : CanVisit {
             override val size = 2
         }
 
-        override fun calculate(value: BigDecimal): BigDecimal {
+        override fun calculate(value: BigDecimal, count: Long): BigDecimal {
             if (value <= BigDecimal.ZERO) {
                 throw FunctionException("Аргумент логарифма должен быть больше нуля")
             }
-            return a * value.ln(DecimalUtils.DIVIDE_MODE) + b
+            return a * value.ln(DecimalUtils.getMode(count)) + b
         }
 
         override fun <R> acceptVisitor(
@@ -122,8 +122,8 @@ sealed class Function : CanVisit {
             override val size = 2
         }
 
-        override fun calculate(value: BigDecimal): BigDecimal {
-            return a * value.pow(b, DecimalUtils.DIVIDE_MODE)
+        override fun calculate(value: BigDecimal, count: Long): BigDecimal {
+            return a * value.pow(b, DecimalUtils.getMode(count))
         }
 
         override fun <R> acceptVisitor(

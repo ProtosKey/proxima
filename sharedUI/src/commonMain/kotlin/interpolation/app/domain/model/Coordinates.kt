@@ -23,10 +23,6 @@ class Coordinates(points: MutableList<Point>) : Iterable<Point> {
         }
     }
 
-    fun isEmpty(): Boolean {
-        return points.size == 0
-    }
-
     operator fun set(index: Int, point: Point) {
         points[index] = point
     }
@@ -36,33 +32,4 @@ class Coordinates(points: MutableList<Point>) : Iterable<Point> {
     override fun iterator() = points.iterator()
 
     val size: Int get() = points.size
-
-    fun addPoint(point: Point) {
-        if (points.size == MAX_SIZE) {
-            throw InitException("Нельзя добавить еще больше точек")
-        }
-        points.add(point)
-    }
-
-    fun removePoint(point: Point) {
-        val removed = points.remove(point)
-        if (!removed) {
-            throw InitException("Точка не была найдена в списке")
-        }
-    }
-
-    fun removeIndex(index: Int) {
-        if (index < 0 || index >= points.size) {
-            throw InitException("Точки с таким индексом не существует")
-        }
-        points.removeAt(index)
-    }
-
-    fun clear() {
-        points.clear()
-    }
-
-    fun isMaxSize(): Boolean {
-        return points.size == MAX_SIZE
-    }
 }

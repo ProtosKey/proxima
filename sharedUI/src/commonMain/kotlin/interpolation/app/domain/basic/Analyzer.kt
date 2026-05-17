@@ -5,5 +5,5 @@ import interpolation.app.domain.model.Function
 import interpolation.app.domain.model.Metrics
 
 interface Analyzer {
-    fun analise(function: Function, points: Coordinates): Metrics
+    fun analise(function: Function, points: Coordinates, count: Long): Metrics
 }

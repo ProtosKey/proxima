@@ -11,7 +11,7 @@ import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.model.Function
 
 object ExponentSolver : CanSolve {
-    override fun solve(points: Coordinates): Function {
+    override fun solve(points: Coordinates, count: Long): Function {
         val lat = mutableListOf<BigDecimal>()
         val lon = mutableListOf<BigDecimal>()
 
@@ -21,10 +21,10 @@ object ExponentSolver : CanSolve {
             }
 
             lat.add(point.x)
-            lon.add(point.y.ln(DecimalUtils.DIVIDE_MODE))
+            lon.add(point.y.ln(DecimalUtils.getMode(count)))
         }
 
-        val result = InterpolationEngine.calculate(lat, lon, Function.Exponent.size)
-        return Function.Exponent(result[0].exp(DecimalUtils.DIVIDE_MODE), result[1])
+        val result = InterpolationEngine.calculate(lat, lon, Function.Exponent.size, count)
+        return Function.Exponent(result[0].exp(DecimalUtils.getMode(count)), result[1])
     }
 }

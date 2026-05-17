@@ -8,15 +8,15 @@ import interpolation.app.domain.model.Function
 import interpolation.app.domain.math.DecimalUtils
 
 object Determination {
-    fun calcDetermination(function: Function, points: Coordinates): BigDecimal {
+    fun calcDetermination(function: Function, points: Coordinates, count: Long): BigDecimal {
         val middle =
-            points.fold(BigDecimal.ZERO) { acc, point -> acc + function.calculate(point.x) }.divide(
+            points.fold(BigDecimal.ZERO) { acc, point -> acc + function.calculate(point.x, count) }.divide(
                 points.size.toBigDecimal(),
-                DecimalUtils.DIVIDE_MODE
+                DecimalUtils.getMode(count)
             )
         val top =
             points.fold(BigDecimal.ZERO) { acc, point ->
-                acc + (point.y - function.calculate(point.x)).pow(
+                acc + (point.y - function.calculate(point.x, count)).pow(
                     2
                 )
             }
@@ -25,7 +25,7 @@ object Determination {
         return if (down.isZero()) {
             throw PrecisionException("Не удалось посчитать коэффициент детерминации")
         } else {
-            BigDecimal.ONE - top.divide(down, DecimalUtils.DIVIDE_MODE)
+            BigDecimal.ONE - top.divide(down, DecimalUtils.getMode(count))
         }
     }
 }

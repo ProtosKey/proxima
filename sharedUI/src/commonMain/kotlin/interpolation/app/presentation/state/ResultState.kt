@@ -7,5 +7,6 @@ data class ResultState(
     val results: Map<FunctionType, FunctionResult> = emptyMap(),
     val selected: Map<FunctionType, Boolean> = emptyMap(),
     val best: FunctionType? = null,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val count: Long = 80L
 )

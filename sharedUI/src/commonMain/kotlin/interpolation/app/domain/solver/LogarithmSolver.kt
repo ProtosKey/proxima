@@ -10,7 +10,7 @@ import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.model.Function
 
 object LogarithmSolver : CanSolve {
-    override fun solve(points: Coordinates): Function {
+    override fun solve(points: Coordinates, count: Long): Function {
         val lat = mutableListOf<BigDecimal>()
         val lon = mutableListOf<BigDecimal>()
 
@@ -19,11 +19,11 @@ object LogarithmSolver : CanSolve {
                 throw SolverException("Аргумент должен быть положительным")
             }
 
-            lat.add(point.x.ln(DecimalUtils.DIVIDE_MODE))
+            lat.add(point.x.ln(DecimalUtils.getMode(count)))
             lon.add(point.y)
         }
 
-        val result = InterpolationEngine.calculate(lat, lon, Function.Logarithm.size)
+        val result = InterpolationEngine.calculate(lat, lon, Function.Logarithm.size, count)
         return Function.Logarithm(result[1], result[0])
     }
 }

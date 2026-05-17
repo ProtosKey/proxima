@@ -6,12 +6,12 @@ import interpolation.app.domain.model.Function
 import interpolation.app.domain.model.Metrics
 
 object QualityAnalyzer : Analyzer {
-    override fun analise(function: Function, points: Coordinates): Metrics {
-        val determination = Determination.calcDetermination(function, points)
+    override fun analise(function: Function, points: Coordinates, count: Long): Metrics {
+        val determination = Determination.calcDetermination(function, points, count)
         return when (function) {
             is Function.Linear -> Metrics.Linear(
                 determination,
-                Pearson.calcPearson(points)
+                Pearson.calcPearson(points, count)
             )
 
             else -> Metrics.Common(determination)

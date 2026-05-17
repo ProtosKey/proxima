@@ -7,7 +7,7 @@ import interpolation.app.domain.model.Coordinates
 import interpolation.app.domain.model.Function
 
 object LinearSolver : CanSolve {
-    override fun solve(points: Coordinates): Function {
+    override fun solve(points: Coordinates, count: Long): Function {
         val lat = mutableListOf<BigDecimal>()
         val lon = mutableListOf<BigDecimal>()
 
@@ -16,7 +16,7 @@ object LinearSolver : CanSolve {
             lon.add(point.y)
         }
 
-        val result = InterpolationEngine.calculate(lat, lon, Function.Linear.size)
+        val result = InterpolationEngine.calculate(lat, lon, Function.Linear.size, count)
         return Function.Linear(result[1], result[0])
     }
 }

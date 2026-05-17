@@ -44,5 +44,5 @@ data class Setting(
     val label: String,
     val description: String
 ) {
-    fun value(): String = options[current] ?: options.values.first()
+    val value: String get() = options[current] ?: options.values.first()
 }
