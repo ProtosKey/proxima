@@ -1,0 +1,37 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="400"
+    android:viewportHeight="400">
+    
+    <!-- Группа с увеличенными отступами (scale 0.55) -->
+    <group
+        android:pivotX="200"
+        android:pivotY="200"
+        android:scaleX="0.55"
+        android:scaleY="0.55">
+        
+        <!-- Линия аппроксимации (сплошной цвет Secondary) -->
+        <path
+            android:pathData="M 40,320 C 133,320 133,107 200,107 C 280,107 306,227 360,200"
+            android:strokeColor="#2B6485"
+            android:strokeWidth="16"
+            android:strokeLineCap="round"
+            android:fillColor="#00000000" />
+
+        <!-- Точка 1 (Левая нижняя) -->
+        <path android:fillColor="#2B6485" android:pathData="M40,320m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"/>
+        <path android:fillColor="#1D3557" android:pathData="M40,320m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0"/>
+        <path android:fillColor="#FFFFFF" android:pathData="M40,320m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+
+        <!-- Точка 2 (Верхняя) -->
+        <path android:fillColor="#2B6485" android:pathData="M200,107m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"/>
+        <path android:fillColor="#1D3557" android:pathData="M200,107m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0"/>
+        <path android:fillColor="#FFFFFF" android:pathData="M200,107m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+
+        <!-- Точка 3 (Правая) -->
+        <path android:fillColor="#2B6485" android:pathData="M360,200m-24,0a24,24 0,1 1,48 0a24,24 0,1 1,-48 0"/>
+        <path android:fillColor="#1D3557" android:pathData="M360,200m-14,0a14,14 0,1 1,28 0a14,14 0,1 1,-28 0"/>
+        <path android:fillColor="#FFFFFF" android:pathData="M360,200m-6,0a6,6 0,1 1,12 0a6,6 0,1 1,-12 0"/>
+    </group>
+</vector>

@@ -1,4 +1,4 @@
-rootProject.name = "interpolation_app"
+rootProject.name = "Proxima"
 
 pluginManagement {
     repositories {

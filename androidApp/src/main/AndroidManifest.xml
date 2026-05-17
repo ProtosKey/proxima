@@ -3,7 +3,8 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
-        android:label="interpolation_app"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:label="Proxima"
         android:theme="@android:style/Theme.Material.NoActionBar">
         <activity
             android:name=".AppActivity"
