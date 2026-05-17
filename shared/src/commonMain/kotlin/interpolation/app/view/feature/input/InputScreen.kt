@@ -108,7 +108,6 @@ class InputScreen : Screen {
                                     Point(
                                         index = index,
                                         point = point,
-                                        canDelete = viewModel.inputState.value.canDelete,
                                         onUpdate = { index: Int, x: String, y: String ->
                                             viewModel.updatePoint(index, x, y)
                                         },

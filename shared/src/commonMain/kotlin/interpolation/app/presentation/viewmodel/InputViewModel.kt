@@ -32,7 +32,6 @@ class InputViewModel : ViewModel(), HaveMessage {
                 _inputState.update {
                     it.copy(
                         input = points.map(EntryMapper::mapTo).toList(),
-                        canDelete = points.size > Coordinates.MIN_SIZE,
                         canAdd = points.size < Coordinates.MAX_SIZE
                     )
                 }
@@ -74,7 +73,6 @@ class InputViewModel : ViewModel(), HaveMessage {
             _inputState.update {
                 it.copy(
                     input = _inputState.value.input + EntryMapper.mapTo(point),
-                    canDelete = _inputState.value.input.size + 1 > Coordinates.MIN_SIZE,
                     canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
                 )
             }

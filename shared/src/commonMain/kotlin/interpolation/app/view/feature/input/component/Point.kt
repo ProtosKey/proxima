@@ -26,7 +26,6 @@ import interpolation.app.theme.LocalAppDimens
 fun Point(
     index: Int,
     point: PointEntry,
-    canDelete: Boolean,
     onUpdate: (Int, String, String) -> Unit,
     onDelete: (Int) -> Unit
 ) {
@@ -81,7 +80,7 @@ fun Point(
                 .aspectRatio(1f),
             shape = RoundedCornerShape(LocalAppDimens.current.radiusMedium),
             onClick = { onDelete(index) },
-            enabled = canDelete,
+            enabled = true,
             colors =
                 IconButtonDefaults.filledIconButtonColors(
                     containerColor = MaterialTheme.colorScheme.error,
@@ -93,10 +92,7 @@ fun Point(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Удалить",
-                tint = if (canDelete)
-                    MaterialTheme.colorScheme.onError
-                else
-                    MaterialTheme.colorScheme.background
+                tint = MaterialTheme.colorScheme.onError
             )
         }
     }
