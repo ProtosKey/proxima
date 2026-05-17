@@ -101,7 +101,10 @@ class InputScreen : Screen {
                                     bottom = height + LocalAppDimens.current.paddingLarge
                                 ),
                             ) {
-                                itemsIndexed(state.input) { index, point ->
+                                itemsIndexed(
+                                    items = state.input,
+                                    key = { index, _ -> index }
+                                ) { index, point ->
                                     Point(
                                         index = index,
                                         point = point,

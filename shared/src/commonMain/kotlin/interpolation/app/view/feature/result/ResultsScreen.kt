@@ -108,7 +108,8 @@ class ResultsScreen : Screen {
                             }
                         } else {
                             items(
-                                state.results.entries.toList()
+                                items = state.results.entries.toList(),
+                                key = { (type, _) -> type }
                             ) { (type, result) ->
                                 val isBest = type == state.best
                                 ResultLabel(
