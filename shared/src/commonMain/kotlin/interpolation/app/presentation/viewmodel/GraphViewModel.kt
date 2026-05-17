@@ -75,7 +75,6 @@ class GraphViewModel : ViewModel(), HaveMessage {
             val curves = results
                 .filterValues { it is FunctionResult.Success }
                 .mapValues { (key, result) ->
-                    println(key)
                     buildCurves(
                         function = (result as FunctionResult.Success).function,
                         left = left - (right - left),

@@ -20,6 +20,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import interpolation.app.presentation.viewmodel.GraphViewModel
 import interpolation.app.theme.LocalAppDimens
+import interpolation.app.view.basic.factory
 import interpolation.app.view.component.Message
 import interpolation.app.view.component.NavigationBar
 import interpolation.app.view.component.Title
@@ -29,7 +30,7 @@ class GraphScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel<GraphViewModel>()
+        val viewModel = viewModel<GraphViewModel>(factory = factory { GraphViewModel() })
         val state by viewModel.graphState.collectAsStateWithLifecycle()
         val message by viewModel.notification.collectAsStateWithLifecycle()
 

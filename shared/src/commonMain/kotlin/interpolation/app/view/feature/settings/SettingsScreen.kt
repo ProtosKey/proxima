@@ -14,6 +14,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import interpolation.app.presentation.viewmodel.SettingsViewModel
 import interpolation.app.theme.LocalAppDimens
+import interpolation.app.view.basic.factory
 import interpolation.app.view.component.NavigationBar
 import interpolation.app.view.component.Title
 import interpolation.app.view.feature.settings.component.Parameter
@@ -22,7 +23,7 @@ class SettingsScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel<SettingsViewModel>()
+        val viewModel = viewModel<SettingsViewModel>(factory = factory { SettingsViewModel() })
         val state by viewModel.state.collectAsStateWithLifecycle()
         val settings = state.settings
 

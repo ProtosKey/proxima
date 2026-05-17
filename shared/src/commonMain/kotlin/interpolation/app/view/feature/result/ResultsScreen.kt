@@ -34,6 +34,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import interpolation.app.presentation.viewmodel.ResultViewModel
 import interpolation.app.theme.LocalAppDimens
+import interpolation.app.view.basic.factory
 import interpolation.app.view.component.NavigationBar
 import interpolation.app.view.component.Title
 import interpolation.app.view.feature.graph.component.Empty
@@ -43,7 +44,7 @@ class ResultsScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel<ResultViewModel>()
+        val viewModel = viewModel<ResultViewModel>(factory = factory { ResultViewModel() })
         val state by viewModel.resultState.collectAsStateWithLifecycle()
         var height by remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
