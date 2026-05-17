@@ -56,7 +56,11 @@ object FastCalculator : FunctionVisitor<FastFunction> {
     ): FastFunction {
         val aD = a.toDouble()
         val bD = b.toDouble()
-        return { x -> aD * ln(x) + bD }
+        return { x ->
+            if (x <= 0.0)
+                throw ArithmeticException("x должен быть положительным")
+            aD * ln(x) + bD
+        }
     }
 
     override fun visitPower(
@@ -65,7 +69,11 @@ object FastCalculator : FunctionVisitor<FastFunction> {
     ): FastFunction {
         val aD = a.toDouble()
         val bD = b.toDouble()
-        return { x -> aD * x.pow(bD) }
+        return { x ->
+            if (x < 0.0)
+                throw ArithmeticException("x должен быть неотрицательным")
+            aD * x.pow(bD)
+        }
     }
 }
 

@@ -40,8 +40,9 @@ class GraphViewModel : ViewModel(), HaveMessage {
         combine(
             MainStore.points,
             MainStore.visibleResults,
-            MainStore.isLoading
-        ) { points, visible, isLoading ->
+            MainStore.isLoading,
+            MainStore.results
+        ) { points, visible, isLoading, _ ->
             val pointData = points.map(DataMapper::mapTo)
 
             _graphState.update {
@@ -73,7 +74,8 @@ class GraphViewModel : ViewModel(), HaveMessage {
             val results = MainStore.results.value
             val curves = results
                 .filterValues { it is FunctionResult.Success }
-                .mapValues { (_, result) ->
+                .mapValues { (key, result) ->
+                    println(key)
                     buildCurves(
                         function = (result as FunctionResult.Success).function,
                         left = left - (right - left),
