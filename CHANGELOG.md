@@ -1,0 +1,130 @@
+## Unreleased (a1e4c24..1b76192)
+#### Features
+- added ios support - (19f284a) - Rinat
+- added scroll in metrics label, signes fixed - (ffa827a) - Rinat
+- added formatter to result view model - (c844b4d) - Rinat
+- formatter is class, result state have sing count - (e424831) - Rinat
+- added graph precision settinga to graph view model - (dce9431) - Rinat
+- added settings math precision to math - (eb05828) - Rinat
+- added settings state, viewmodel for settings page - (1a41a26) - Rinat
+- added loading to graph screen - (bebae52) - Rinat
+- added warning, good message, graph refactored - (8d4055a) - Rinat
+- added graph for graph page - (74a8c47) - Rinat
+- added view model for graph page - (67c155f) - Rinat
+- added state for graph page - (ca80133) - Rinat
+- added point for graph, added mapper for point for graph - (eeece74) - Rinat
+- added hide, show button in results, added hide, show data to main store - (6f7b4fc) - Rinat
+- added empty data message - (15ebb48) - Rinat
+- added to float, to double in bigdecimal - (71cfa99) - Rinat
+- added class for fast calculation for charts - (b6eda03) - Rinat
+- added result screen - (e5b5d20) - Rinat
+- added full label for result - (92ecc79) - Rinat
+- added metrics output - (9b4deb9) - Rinat
+- added result label for function - (8bdf392) - Rinat
+- added label for function type - (8e6c9bf) - Rinat
+- added placeholder for input, added place for delete icon - (25d712e) - Rinat
+- added input points screen - (0664234) - Rinat
+- added message - (2469aa0) - Rinat
+- added button for input - (fa70942) - Rinat
+- added settings screen - (9567ed6) - Rinat
+- added title component - (53a953c) - Rinat
+- added new param to settings, settings improved - (a0e1027) - Rinat
+- added dimension data, removed mvp main screen - (0af03d0) - Rinat
+- added main screen - (a04a136) - Rinat
+- mvp graph only for tests - (536ac72) - Rinat
+- added settings - (148ed9f) - Rinat
+- added viewmodel for results - (c84b1cb) - Rinat
+- added state for result table - (68918f7) - Rinat
+- added viewmodel for input screen - (049243e) - Rinat
+- added method for show message - (36bc11d) - Rinat
+- added input state - (9dd402d) - Rinat
+- added interface for viewmodel with messages - (0e5f70b) - Rinat
+- added data package for global data in app - (56dbca0) - Rinat
+- model classes moved from presentation to data - (f824592) - Rinat
+- added set method - (82b1f2a) - Rinat
+- added main viewmodel controller - (fecfa13) - Rinat
+- added manager for points input - (9efe325) - Rinat
+- added functions result calculation - (cfc8926) - Rinat
+- added new methods to default, little code refactor - (4c90270) - Rinat
+- added function formatter - (33e2be4) - Rinat
+- added setting manager - (c1e434f) - Rinat
+- added function result class, message type - (dfab525) - Rinat
+- added defaults objects - (d54d467) - Rinat
+- added message type - (17aed48) - Rinat
+- added setter for points - (75b6fb4) - Rinat
+- added mapper for entry - (17ee917) - Rinat
+- added point mapper - (48cee54) - Rinat
+- added exception for parsers - (309fb19) - Rinat
+- added string parser - (6374bb1) - Rinat
+- added parser for label and entry - (7bb9d54) - Rinat
+- added model classes for presentation - (6369290) - Rinat
+- added solver for interpolation - (20c7fa5) - Rinat
+- not functions fully decimal - (117cbb5) - Rinat
+- added exp, pow functions for math components - (0b9bdb3) - Rinat
+- added data for caclulating precision - (ab9da99) - Rinat
+- added all model classes - (0c4b43a) - Rinat
+- added math utilities - (b44061f) - Rinat
+- added main exceptions - (a5233e0) - Rinat
+- added basic interfaces - (616524a) - Rinat
+- added gradle, scr structure and git - (a1e4c24) - Rinat
+#### Bug Fixes
+- ios imports fixed - (6c643c7) - Rinat
+- power, logarithm results fixed - (6622201) - Rinat
+- settings screen, parameter fixed due new store - (fa87864) - Rinat
+- settings parameters fixed - (e9765d5) - Rinat
+- viewport of graph fixed - (ea21bfc) - Rinat
+- start icon for the best fixed, border color in results changed as in navbar - (f862641) - Rinat
+- fixed long calculating result - (8a549cb) - Rinat
+- coping data in function result fixed - (7405c5e) - Rinat
+- function formatter fixed - (8b74bbf) - Rinat
+- visitor fixed, now no information about presentation layer - (3a26966) - Rinat
+- message fixed - (57f5aca) - Rinat
+- gauss solver fixed - (bba4c6b) - Rinat
+- clip fixed - (cd9b493) - Rinat
+- output for numbers can cut numbers - (75e9fc1) - Rinat
+- output fixed for interpolation - (ac0eea1) - Rinat
+- padding fixed - (baf8d2e) - Rinat
+- controls now do not get in the navbar - (2e73f9d) - Rinat
+- added fixed main screen without graph - (1583d0e) - Rinat
+- fixed deleting, updating, adding, index ponints - (ee48e8c) - Rinat
+- minimum points fixed - (492cfaf) - Rinat
+- now data updates after updating points - (23d81c1) - Rinat
+- navigation fixed, now its custom - (2fb626b) - Rinat
+- app class fixed - (e91df9b) - Rinat
+- removed unised imports from navelem - (145476c) - Rinat
+- removed viewmodel from settings - (cd6a3d3) - Rinat
+- added interface for mapper - (8571631) - Rinat
+- determination function and exponent solver calc fixed - (8ff6783) - Rinat
+- now functions clearly know their size - (bc34489) - Rinat
+#### Documentation
+- removed vico from readme - (570a9a6) - Rinat
+- docs fixed - (580a2ee) - Rinat
+- added readme docs - (b15b3d4) - Rinat
+#### Build system
+- removed vico library - (28ce6c5) - Rinat
+- added libs for latex, build fixed - (b6aab02) - Rinat
+- added voyager import for navigation - (32de4aa) - Rinat
+- added libraries for ui, decimal - (f070a6c) - Rinat
+#### Refactoring
+- removed unused lib - (5a83cb1) - Rinat
+- main directory renamed to shared - (ad6aaa3) - Rinat
+- padding in function label changed - (dc73e32) - Rinat
+- loading state moved to main store - (abba07c) - Rinat
+- little ui changes - (1a2cbd9) - Rinat
+- default points changed, navbar line changed - (4d5047c) - Rinat
+- havbar line color changed - (f5ebb5d) - Rinat
+- point random returns integer values - (6724469) - Rinat
+- changed size of navbar - (2995deb) - Rinat
+- switch style changed - (7a5caf1) - Rinat
+- navigation bar changed - (11466f4) - Rinat
+- added point entry back to presentation - (4f45e34) - Rinat
+- removed unused imports - (7796316) - Rinat
+- point labels removed, entry fixed - (bfc0fe2) - Rinat
+- now parser use mappers - (98eeeef) - Rinat
+- removed unused methods in functions - (26127db) - Rinat
+#### Style
+- added icon to ios, icon in android fixed - (1b76192) - Rinat
+- added icon to android - (83b01cf) - Rinat
+
+
+
