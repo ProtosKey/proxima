@@ -16,15 +16,10 @@ import androidx.compose.ui.Modifier
 import interpolation.app.data.model.FunctionResult
 import interpolation.app.data.model.FunctionType
 import interpolation.app.domain.model.Metrics
+import interpolation.app.presentation.state.ResultState
 import interpolation.app.presentation.tools.FunctionClipper
-import interpolation.app.presentation.tools.FunctionFormatter
 import interpolation.app.presentation.tools.StringParser
 import interpolation.app.theme.LocalAppDimens
-import interpolation.app.view.feature.result.component.Constants.SIGN_METRICS
-
-data object Constants {
-    const val SIGN_METRICS = 10
-}
 
 @Composable
 fun ResultLabel(
@@ -33,7 +28,8 @@ fun ResultLabel(
     results: FunctionResult,
     type: FunctionType,
     onHide: (type: FunctionType) -> Unit,
-    isVisible: Boolean
+    isVisible: Boolean,
+    state: ResultState
 ) {
     val border = if (isTheBest) {
         BorderStroke(
@@ -93,7 +89,7 @@ fun ResultLabel(
                     }
 
                     FunctionResult(
-                        latex = results.function.acceptVisitor(FunctionFormatter),
+                        latex = results.function.acceptVisitor(state.formatter),
                         copy = results.function.acceptVisitor(FunctionClipper)
                     )
 
@@ -106,8 +102,7 @@ fun ResultLabel(
                         MetricResult(
                             label = "\\textsf{R}^{2} \\textsf{(Детерминация)}",
                             value = StringParser.prepareToString(
-                                results.metrics.determination,
-                                SIGN_METRICS
+                                results.metrics.determination
                             ),
                             modifier = Modifier.weight(1f),
                         )
@@ -116,8 +111,7 @@ fun ResultLabel(
                             MetricResult(
                                 label = "\\textsf{r} \\textsf{(Пирсон)}",
                                 value = StringParser.prepareToString(
-                                    results.metrics.linear,
-                                    SIGN_METRICS
+                                    results.metrics.linear
                                 ),
                                 modifier = Modifier.weight(1f),
                             )

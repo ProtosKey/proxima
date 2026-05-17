@@ -116,7 +116,8 @@ class ResultsScreen : Screen {
                                     results = result,
                                     type = type,
                                     onHide = viewModel::tickFunction,
-                                    isVisible = viewModel.resultState.value.selected[type] ?: false
+                                    isVisible = viewModel.resultState.value.selected[type] ?: false,
+                                    state = state
                                 )
                             }
                         }
