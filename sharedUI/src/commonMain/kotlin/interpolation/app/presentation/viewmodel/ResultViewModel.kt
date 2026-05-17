@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,11 @@ class ResultViewModel : ViewModel(), HaveMessage {
     val resultState = _resultState.asStateFlow()
 
     init {
+        MainStore.settings.onEach { settings ->
+            println(settings.mathPrecision.value.toInt())
+            _resultState.update { it.copy(count = settings.mathPrecision.value.toLong()) }
+        }.launchIn(viewModelScope)
+
         combine(
             MainStore.results,
             MainStore.visibleResults,
@@ -57,8 +63,11 @@ class ResultViewModel : ViewModel(), HaveMessage {
                 val points = Coordinates(MainStore.points.value.toMutableList())
                 val newResults = Defaults.solvers().mapValues { (_, solver) ->
                     try {
-                        val function = solver.solve(points)
-                        FunctionResult.Success(function, QualityAnalyzer.analise(function, points))
+                        val function = solver.solve(points, _resultState.value.count)
+                        FunctionResult.Success(
+                            function,
+                            QualityAnalyzer.analise(function, points, _resultState.value.count)
+                        )
                     } catch (e: Exception) {
                         FunctionResult.Error(
                             getMessageByError(e)

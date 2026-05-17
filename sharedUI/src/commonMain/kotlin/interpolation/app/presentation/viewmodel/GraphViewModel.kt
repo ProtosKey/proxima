@@ -20,14 +20,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class GraphViewModel : ViewModel(), HaveMessage {
-    companion object {
-        private const val CURVE_POINTS = 500
-    }
-
+    private var curvePoints: Int = 0
     private var messageJob: Job? = null
     private var rangeJob: Job? = null
     private val _graphState = MutableStateFlow(GraphState())
@@ -35,6 +33,11 @@ class GraphViewModel : ViewModel(), HaveMessage {
     val notification = MainStore.notification
 
     init {
+        MainStore.settings.onEach { settings ->
+            println(settings.graphResolution.value.toInt())
+            curvePoints = settings.graphResolution.value.toInt()
+        }.launchIn(viewModelScope)
+
         combine(
             MainStore.points,
             MainStore.visibleResults,
@@ -89,9 +92,9 @@ class GraphViewModel : ViewModel(), HaveMessage {
         right: Float
     ): List<PointData> {
         val fast = function.acceptVisitor(FastCalculator)
-        val step = (right - left) / CURVE_POINTS
+        val step = (right - left) / curvePoints
 
-        return (0..CURVE_POINTS).mapNotNull { i ->
+        return (0..curvePoints).mapNotNull { i ->
             val x = left + i * step
             try {
                 PointData(x, fast.calculate(x.toDouble()).toFloat())
