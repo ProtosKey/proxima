@@ -75,7 +75,7 @@ dependencies {
     debugImplementation(libs.compose.ui.tooling)
 }
 android {
-    namespace = "interpolation.app"
+    namespace = "proxima.app"
     compileSdk = 35
     defaultConfig {
         minSdk = 24

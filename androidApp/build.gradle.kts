@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "interpolation.app.androidApp"
+    namespace = "proxima.app.androidApp"
     compileSdk = 36
 
     defaultConfig {
