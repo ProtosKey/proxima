@@ -4,7 +4,7 @@ import proxima.app.domain.exception.InitException
 
 class Coordinates(points: MutableList<Point>) : Iterable<Point> {
     companion object {
-        const val MAX_SIZE = 12
+        const val MAX_SIZE = 30
         const val MIN_SIZE = 3
     }
 
