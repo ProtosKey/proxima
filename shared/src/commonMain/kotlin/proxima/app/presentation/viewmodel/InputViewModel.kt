@@ -87,8 +87,8 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
                     canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
                 )
             }
-            store.updatePoints(store.points.value + point)
-            if (store.points.value.size == Coordinates.MAX_SIZE) {
+
+            if (store.addPoint(point) == Coordinates.MAX_SIZE) {
                 showMessage(
                     "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
                     MessageType.WARNING

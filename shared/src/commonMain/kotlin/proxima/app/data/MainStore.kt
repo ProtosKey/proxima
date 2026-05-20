@@ -81,6 +81,16 @@ class MainStore {
         }
     }
 
+    fun addPoint(point: Point): Int {
+        var newSize = 0
+        _points.update { current ->
+            val updated = current + point
+            newSize = updated.size
+            updated
+        }
+        return newSize
+    }
+
     fun updatePoints(points: List<Point>) {
         _points.update { points }
     }

@@ -107,13 +107,11 @@ class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     fun addPoint(x: Float, y: Float) {
         if (store.points.value.size < Coordinates.MAX_SIZE) {
             val point = DataMapper.mapFrom(PointData(x, y))
+            val newSize = store.addPoint(point)
             _graphState.update {
-                it.copy(
-                    canAdd = store.points.value.size < Coordinates.MAX_SIZE
-                )
+                it.copy(canAdd = newSize < Coordinates.MAX_SIZE)
             }
-            store.updatePoints(store.points.value + point)
-            if (store.points.value.size == Coordinates.MAX_SIZE) {
+            if (newSize == Coordinates.MAX_SIZE) {
                 showMessage(
                     "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
                     MessageType.WARNING
