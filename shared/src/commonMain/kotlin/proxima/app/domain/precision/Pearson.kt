@@ -11,7 +11,10 @@ object Pearson {
     fun calcPearson(points: Coordinates, count: Long): BigDecimal {
         var lat = BigDecimal.ZERO
         var lon = BigDecimal.ZERO
-        points.forEach { point -> lat += point.x; lon += point.y }
+        points.forEach { point ->
+            lat += point.x
+            lon += point.y
+        }
         lat = lat.divide(points.size.toBigDecimal(), DecimalUtils.getMode(count))
         lon = lon.divide(points.size.toBigDecimal(), DecimalUtils.getMode(count))
 
@@ -21,9 +24,8 @@ object Pearson {
         var first = BigDecimal.ZERO
         var second = BigDecimal.ZERO
         points.forEach { point ->
-            first += (point.x - lat).pow(2); second += (point.y - lon).pow(
-            2
-        )
+            first += (point.x - lat).pow(2)
+            second += (point.y - lon).pow(2)
         }
 
         return if (first.isZero() || second.isZero()) {

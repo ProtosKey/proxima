@@ -37,7 +37,7 @@ internal object GaussSolver {
                 val c = params[k][i].divide(
                     params[i][i], DecimalUtils.getMode(count)
                 )
-                addMultiplyRow(params, vector, c, i, k);
+                addMultiplyRow(params, vector, c, i, k)
             }
         }
 

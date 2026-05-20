@@ -1,4 +1,4 @@
-package proxima.app.domain.model;
+package proxima.app.domain.model
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import proxima.app.domain.basic.CanVisit
