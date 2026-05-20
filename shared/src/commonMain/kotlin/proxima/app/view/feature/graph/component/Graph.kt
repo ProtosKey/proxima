@@ -2,8 +2,7 @@ package proxima.app.view.feature.graph.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.rememberTransformableState
-import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -85,11 +84,6 @@ fun Graph(
         )
     }
 
-    val transformableState = rememberTransformableState { zoomChange, panChange, _ ->
-        zoom = (zoom * zoomChange).coerceIn(0.1f, 30f)
-        panOffset += panChange
-    }
-
     val textMeasurer = rememberTextMeasurer()
     val labelStyle = TextStyle(
         color = colors.onSurfaceVariant.copy(alpha = 0.5f),
@@ -112,7 +106,13 @@ fun Graph(
                     onClick(pos.x, pos.y)
                 }
             }
-            .transformable(transformableState)
+            .pointerInput(Unit) {
+                detectTransformGestures { centroid, pan, zoomChange, _ ->
+                    val newZoom = (zoom * zoomChange).coerceIn(0.1f, 30f)
+                    panOffset = centroid + (panOffset - centroid) * (newZoom / zoom) + pan
+                    zoom = newZoom
+                }
+            }
     ) {
         val drawWidth = size.width - padding * 2
         val drawHeight = size.height - padding * 2
