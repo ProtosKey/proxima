@@ -13,6 +13,7 @@ kermit = "2.0.4"
 bignum = "0.3.9"
 voyager = "1.0.0"
 latex = "1.1.1"
+koin = "4.0.0"
 
 [libraries]
 
@@ -42,6 +43,9 @@ compose-material-icons = { module = "org.jetbrains.compose.material:material-ico
 latex-base = { module = "io.github.huarangmeng:latex-base", version.ref = "latex" }
 latex-parser = { module = "io.github.huarangmeng:latex-parser", version.ref = "latex" }
 latex-renderer = { module = "io.github.huarangmeng:latex-renderer", version.ref = "latex" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
 [plugins]
 

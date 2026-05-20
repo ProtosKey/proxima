@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-object MainStore {
+class MainStore {
     private val _points = MutableStateFlow<List<Point>>(emptyList())
     val points = _points.asStateFlow()
 

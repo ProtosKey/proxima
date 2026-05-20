@@ -43,6 +43,9 @@ kotlin {
             implementation(libs.latex.parser)
             implementation(libs.latex.renderer)
             implementation(libs.compose.material.icons)
+
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
         }
 
         commonTest.dependencies {

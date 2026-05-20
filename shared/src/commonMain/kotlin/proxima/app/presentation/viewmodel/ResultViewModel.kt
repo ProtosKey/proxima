@@ -26,21 +26,21 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ResultViewModel : ViewModel(), HaveMessage {
+class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     private val _resultState = MutableStateFlow(ResultState())
     val resultState = _resultState.asStateFlow()
 
     init {
-        MainStore.settings.onEach { settings ->
+        store.settings.onEach { settings ->
             _resultState.update { it.copy(
                 count = settings.mathPrecision.value.toLong(),
                 formatter = FunctionFormatter(settings.displayPrecision.value.toInt())) }
         }.launchIn(viewModelScope)
 
         combine(
-            MainStore.results,
-            MainStore.visibleResults,
-            MainStore.isLoading
+            store.results,
+            store.visibleResults,
+            store.isLoading
         ) { results, visible, isLoading ->
             _resultState.update {
                 it.copy(
@@ -54,15 +54,15 @@ class ResultViewModel : ViewModel(), HaveMessage {
     }
 
     fun tickFunction(functionType: FunctionType) {
-        MainStore.tickVisible(functionType)
+        store.tickVisible(functionType)
     }
 
     fun calculateResult() {
         if (_resultState.value.isLoading) return
         viewModelScope.launch(Dispatchers.Default) {
-            MainStore.startLoading()
+            store.startLoading()
             try {
-                val points = Coordinates(MainStore.points.value.toMutableList())
+                val points = Coordinates(store.points.value.toMutableList())
                 val newResults = Defaults.solvers().mapValues { (_, solver) ->
                     try {
                         val function = solver.solve(points, _resultState.value.count)
@@ -76,13 +76,13 @@ class ResultViewModel : ViewModel(), HaveMessage {
                         )
                     }
                 }
-                MainStore.updateFunctions(newResults)
+                store.updateFunctions(newResults)
             } catch (e: Exception) {
                 showMessage(
                     getMessageByError(e), MessageType.ERROR
                 )
             } finally {
-                MainStore.endLoading()
+                store.endLoading()
             }
         }
     }
@@ -108,10 +108,10 @@ class ResultViewModel : ViewModel(), HaveMessage {
     }
 
     override fun hideMessage() {
-        MainStore.hideMessage()
+        store.hideMessage()
     }
 
     override fun showMessage(message: String, messageType: MessageType) {
-        MainStore.showMessage(message, messageType)
+        store.showMessage(message, messageType)
     }
 }

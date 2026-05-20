@@ -24,24 +24,24 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GraphViewModel : ViewModel(), HaveMessage {
+class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     private var curvePoints: Int = 0
     private var messageJob: Job? = null
     private var rangeJob: Job? = null
     private val _graphState = MutableStateFlow(GraphState())
     val graphState = _graphState.asStateFlow()
-    val notification = MainStore.notification
+    val notification = store.notification
 
     init {
-        MainStore.settings.onEach { settings ->
+        store.settings.onEach { settings ->
             curvePoints = settings.graphResolution.value.toInt()
         }.launchIn(viewModelScope)
 
         combine(
-            MainStore.points,
-            MainStore.visibleResults,
-            MainStore.isLoading,
-            MainStore.results
+            store.points,
+            store.visibleResults,
+            store.isLoading,
+            store.results
         ) { points, visible, isLoading, _ ->
             val pointData = points.map(DataMapper::mapTo)
 
@@ -50,7 +50,7 @@ class GraphViewModel : ViewModel(), HaveMessage {
                     points = pointData,
                     canAdd = points.size < Coordinates.MAX_SIZE,
                     visible = visible,
-                    theBest = findBestResult(MainStore.results.value),
+                    theBest = findBestResult(store.results.value),
                     isLoading = isLoading
                 )
             }
@@ -71,7 +71,7 @@ class GraphViewModel : ViewModel(), HaveMessage {
     ) {
         rangeJob?.cancel()
         rangeJob = viewModelScope.launch(Dispatchers.Default) {
-            val results = MainStore.results.value
+            val results = store.results.value
             val curves = results
                 .filterValues { it is FunctionResult.Success }
                 .mapValues { (key, result) ->
@@ -105,15 +105,15 @@ class GraphViewModel : ViewModel(), HaveMessage {
     }
 
     fun addPoint(x: Float, y: Float) {
-        if (MainStore.points.value.size < Coordinates.MAX_SIZE) {
+        if (store.points.value.size < Coordinates.MAX_SIZE) {
             val point = DataMapper.mapFrom(PointData(x, y))
             _graphState.update {
                 it.copy(
-                    canAdd = MainStore.points.value.size < Coordinates.MAX_SIZE
+                    canAdd = store.points.value.size < Coordinates.MAX_SIZE
                 )
             }
-            MainStore.updatePoints(MainStore.points.value + point)
-            if (MainStore.points.value.size == Coordinates.MAX_SIZE) {
+            store.updatePoints(store.points.value + point)
+            if (store.points.value.size == Coordinates.MAX_SIZE) {
                 showMessage(
                     "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
                     MessageType.WARNING
@@ -129,17 +129,17 @@ class GraphViewModel : ViewModel(), HaveMessage {
 
     override fun hideMessage() {
         messageJob?.cancel()
-        MainStore.hideMessage()
+        store.hideMessage()
     }
 
     override fun showMessage(message: String, messageType: MessageType) {
         messageJob?.cancel()
         messageJob = viewModelScope.launch {
-            if (MainStore.notification.value.isVisible) {
-                MainStore.hideMessage()
+            if (store.notification.value.isVisible) {
+                store.hideMessage()
                 delay(250)
             }
-            MainStore.showMessage(message, messageType)
+            store.showMessage(message, messageType)
         }
     }
 

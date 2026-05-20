@@ -10,17 +10,17 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel(private val store: MainStore) : ViewModel() {
     private val _state = MutableStateFlow(SettingState())
     val state = _state.asStateFlow()
 
     init {
-        MainStore.settings.onEach { currentSettings ->
+        store.settings.onEach { currentSettings ->
             _state.update { it.copy(settings = currentSettings) }
         }.launchIn(viewModelScope)
     }
 
-    fun updateMathPrecision(key: String) = MainStore.updateMathPrecision(key)
-    fun updateGraphResolution(key: String) = MainStore.updateGraphResolution(key)
-    fun updateDisplayPrecision(key: String) = MainStore.updateDisplayPrecision(key)
+    fun updateMathPrecision(key: String) = store.updateMathPrecision(key)
+    fun updateGraphResolution(key: String) = store.updateGraphResolution(key)
+    fun updateDisplayPrecision(key: String) = store.updateDisplayPrecision(key)
 }

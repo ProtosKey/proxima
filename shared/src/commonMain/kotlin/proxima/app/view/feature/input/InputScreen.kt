@@ -29,6 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.koin.compose.koinInject
+import proxima.app.data.MainStore
 import proxima.app.presentation.viewmodel.InputViewModel
 import proxima.app.theme.LocalAppDimens
 import proxima.app.view.basic.factory
@@ -43,7 +45,8 @@ class InputScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel<InputViewModel>(factory = factory { InputViewModel() })
+        val store = koinInject<MainStore>()
+        val viewModel = viewModel<InputViewModel>(factory = factory { InputViewModel(store) })
         val state by viewModel.inputState.collectAsStateWithLifecycle()
         val message by viewModel.notification.collectAsStateWithLifecycle()
         var height by remember { mutableStateOf(0.dp) }

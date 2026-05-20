@@ -21,14 +21,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class InputViewModel : ViewModel(), HaveMessage {
+class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     private val _inputState = MutableStateFlow(InputState())
     private var messageJob: Job? = null
     val inputState = _inputState.asStateFlow()
-    val notification = MainStore.notification
+    val notification = store.notification
 
     init {
-        MainStore.points.onEach { points ->
+        store.points.onEach { points ->
             if (points.size != _inputState.value.input.size) {
                 _inputState.update {
                     it.copy(
@@ -42,17 +42,17 @@ class InputViewModel : ViewModel(), HaveMessage {
 
     override fun hideMessage() {
         messageJob?.cancel()
-        MainStore.hideMessage()
+        store.hideMessage()
     }
 
     override fun showMessage(message: String, messageType: MessageType) {
         messageJob?.cancel()
         messageJob = viewModelScope.launch {
-            if (MainStore.notification.value.isVisible) {
-                MainStore.hideMessage()
+            if (store.notification.value.isVisible) {
+                store.hideMessage()
                 delay(250)
             }
-            MainStore.showMessage(message, messageType)
+            store.showMessage(message, messageType)
         }
     }
 
@@ -87,8 +87,8 @@ class InputViewModel : ViewModel(), HaveMessage {
                     canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
                 )
             }
-            MainStore.updatePoints(MainStore.points.value + point)
-            if (MainStore.points.value.size == Coordinates.MAX_SIZE) {
+            store.updatePoints(store.points.value + point)
+            if (store.points.value.size == Coordinates.MAX_SIZE) {
                 showMessage(
                     "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
                     MessageType.WARNING
@@ -105,7 +105,7 @@ class InputViewModel : ViewModel(), HaveMessage {
     fun removeByIndex(index: Int) {
         try {
             checkIndex(index)
-            MainStore.deletePointByIndex(index)
+            store.deletePointByIndex(index)
         } catch (e: ModelException) {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
         }
@@ -123,7 +123,7 @@ class InputViewModel : ViewModel(), HaveMessage {
         }
 
         if (needUpdate)
-            MainStore.updatePoints(points)
+            store.updatePoints(points)
     }
 
     private fun checkIndex(index: Int) {

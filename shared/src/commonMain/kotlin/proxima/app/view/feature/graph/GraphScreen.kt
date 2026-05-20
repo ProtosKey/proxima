@@ -18,6 +18,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.koin.compose.koinInject
+import proxima.app.data.MainStore
 import proxima.app.presentation.viewmodel.GraphViewModel
 import proxima.app.theme.LocalAppDimens
 import proxima.app.view.basic.factory
@@ -30,7 +32,8 @@ class GraphScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = viewModel<GraphViewModel>(factory = factory { GraphViewModel() })
+        val store = koinInject<MainStore>()
+        val viewModel = viewModel<GraphViewModel>(factory = factory { GraphViewModel(store) })
         val state by viewModel.graphState.collectAsStateWithLifecycle()
         val message by viewModel.notification.collectAsStateWithLifecycle()
 
