@@ -3,7 +3,7 @@ package proxima.app.domain.math
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import proxima.app.domain.exception.SolverException
 
-object GaussSolver {
+internal object GaussSolver {
     fun solveSystem(
         params: MutableList<MutableList<BigDecimal>>,
         vector: MutableList<BigDecimal>,

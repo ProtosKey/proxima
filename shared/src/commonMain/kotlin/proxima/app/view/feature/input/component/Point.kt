@@ -45,33 +45,31 @@ fun Point(
             style = MaterialTheme.typography.bodyLarge,
         )
          */
+        val fieldColors = if (!point.isValid) OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.error,
+            unfocusedBorderColor = MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+        ) else OutlinedTextFieldDefaults.colors(
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+        )
+
         OutlinedTextField(
             value = point.x,
             shape = RoundedCornerShape(LocalAppDimens.current.radiusMedium),
             onValueChange = { onUpdate(index, it, point.y) },
-            placeholder = {
-                PlaceHolder("X", index)
-            },
+            placeholder = { PlaceHolder("X", index) },
             modifier = Modifier.weight(1f),
             singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-            )
-
+            colors = fieldColors
         )
 
         OutlinedTextField(
             value = point.y,
             shape = RoundedCornerShape(LocalAppDimens.current.radiusMedium),
             onValueChange = { onUpdate(index, point.x, it) },
-            placeholder = {
-                PlaceHolder("Y", index)
-            },
+            placeholder = { PlaceHolder("Y", index) },
             modifier = Modifier.weight(1f),
             singleLine = true,
-            colors = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
-            )
+            colors = fieldColors
         )
 
         FilledIconButton(

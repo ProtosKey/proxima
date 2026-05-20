@@ -10,6 +10,7 @@ import proxima.app.presentation.basic.HaveMessage
 import proxima.app.presentation.exception.ModelException
 import proxima.app.presentation.mapper.EntryMapper
 import proxima.app.presentation.model.PointEntry
+import proxima.app.presentation.tools.StringParser
 import proxima.app.presentation.state.InputState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -59,11 +60,21 @@ class InputViewModel : ViewModel(), HaveMessage {
         try {
             checkIndex(index)
             val newInput = _inputState.value.input.toMutableList()
-            newInput[index] = PointEntry(x, y)
+            newInput[index] = PointEntry(x, y, isValid = isEntryValid(x, y))
             _inputState.update { it.copy(input = newInput) }
             parsePoints()
         } catch (e: ModelException) {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
+        }
+    }
+
+    private fun isEntryValid(x: String, y: String): Boolean {
+        return try {
+            StringParser.parseBigDecimal(x)
+            StringParser.parseBigDecimal(y)
+            true
+        } catch (_: Exception) {
+            false
         }
     }
 

@@ -194,8 +194,8 @@ private fun DrawScope.drawGrid(
     offset: (Float, Float) -> Offset,
     stroke: Dp = 1.dp
 ) {
-    val horizon = getGripStep((maxHorizon - minHorizon) / 8)
-    val vertical = getGripStep((maxVertical - minVertical) / 16)
+    val horizon = getGridStep((maxHorizon - minHorizon) / 8)
+    val vertical = getGridStep((maxVertical - minVertical) / 16)
 
     var current = floor(minHorizon / horizon) * horizon
     while (current <= maxHorizon + horizon) {
@@ -238,7 +238,7 @@ private fun DrawScope.drawGrid(
     }
 }
 
-private fun getGripStep(step: Float): Float {
+private fun getGridStep(step: Float): Float {
     if (step <= 0f) return 1f
     val magnitude = 10.0.pow(floor(log10(step.toDouble()))).toFloat()
     val res = step / magnitude
