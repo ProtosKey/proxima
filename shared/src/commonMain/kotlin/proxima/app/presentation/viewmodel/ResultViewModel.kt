@@ -1,6 +1,5 @@
 package proxima.app.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.FunctionResult
@@ -14,8 +13,8 @@ import proxima.app.domain.exception.PrecisionException
 import proxima.app.domain.exception.SolverException
 import proxima.app.domain.model.Coordinates
 import proxima.app.domain.precision.QualityAnalyzer
-import proxima.app.presentation.basic.HaveMessage
-import proxima.app.presentation.mapper.EntryMapper
+import proxima.app.presentation.basic.BaseViewModel
+import proxima.app.presentation.mapper.RawMapper
 import proxima.app.presentation.state.ResultState
 import proxima.app.presentation.tools.FunctionFormatter
 import kotlinx.coroutines.async
@@ -30,7 +29,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
+class ResultViewModel(store: MainStore) : BaseViewModel(store) {
     private val _resultState = MutableStateFlow(ResultState())
     val resultState = _resultState.asStateFlow()
     val notification = store.notification
@@ -71,7 +70,7 @@ class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
             showMessage("Добавьте точки для расчёта", MessageType.ERROR)
             return
         }
-        if (store.rawPoints.value.any { runCatching { EntryMapper.mapFrom(it) }.isFailure }) {
+        if (store.rawPoints.value.any { runCatching { RawMapper.toPoint(it) }.isFailure }) {
             showMessage("Исправьте некорректные точки перед расчётом", MessageType.ERROR)
             return
         }
@@ -80,9 +79,7 @@ class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
             try {
                 val points = Coordinates(
                     store.rawPoints.value
-                        .map {
-                            EntryMapper.mapFrom(it)
-                        }
+                        .map { RawMapper.toPoint(it) }
                         .toMutableList()
                 )
                 val newResults = coroutineScope {
@@ -129,13 +126,5 @@ class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
         }.maxByOrNull { result ->
             (result.value as FunctionResult.Success).metrics.determination
         }?.key
-    }
-
-    override fun hideMessage() {
-        store.hideMessage()
-    }
-
-    override fun showMessage(message: String, messageType: MessageType) {
-        store.showMessage(message, messageType)
     }
 }

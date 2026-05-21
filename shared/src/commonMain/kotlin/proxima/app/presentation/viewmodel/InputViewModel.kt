@@ -1,28 +1,24 @@
 package proxima.app.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.MessageType
 import proxima.app.data.model.RawPoint
 import proxima.app.data.utils.Defaults
 import proxima.app.domain.model.Coordinates
-import proxima.app.presentation.basic.HaveMessage
+import proxima.app.domain.utils.PointFactory
+import proxima.app.presentation.basic.BaseViewModel
 import proxima.app.presentation.exception.ModelException
-import proxima.app.presentation.mapper.EntryMapper
+import proxima.app.presentation.mapper.RawMapper
 import proxima.app.presentation.state.InputState
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
-class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
+class InputViewModel(store: MainStore) : BaseViewModel(store) {
     private val _inputState = MutableStateFlow(InputState())
-    private var messageJob: Job? = null
     val inputState = _inputState.asStateFlow()
     val notification = store.notification
 
@@ -31,7 +27,7 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
             if (rawPoints.size != _inputState.value.input.size) {
                 _inputState.update {
                     it.copy(
-                        input = rawPoints.map(EntryMapper::toEntry),
+                        input = rawPoints.map(RawMapper::toEntry),
                         canAdd = rawPoints.size < Coordinates.MAX_SIZE
                     )
                 }
@@ -39,27 +35,11 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
         }.launchIn(viewModelScope)
     }
 
-    override fun hideMessage() {
-        messageJob?.cancel()
-        store.hideMessage()
-    }
-
-    override fun showMessage(message: String, messageType: MessageType) {
-        messageJob?.cancel()
-        messageJob = viewModelScope.launch {
-            if (store.notification.value.isVisible) {
-                store.hideMessage()
-                delay(250)
-            }
-            store.showMessage(message, messageType)
-        }
-    }
-
     fun updatePoint(index: Int, x: String, y: String) {
         try {
             checkIndex(index)
             val newInput = _inputState.value.input.toMutableList()
-            newInput[index] = EntryMapper.toEntry(RawPoint(x, y))
+            newInput[index] = RawMapper.toEntry(RawPoint(x, y))
             _inputState.update { it.copy(input = newInput) }
             store.updateRawPoint(index, x, y)
         } catch (e: ModelException) {
@@ -69,7 +49,7 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
 
     fun addPoint() {
         if (store.rawPoints.value.size < Coordinates.MAX_SIZE) {
-            val newSize = store.addRawPoint(EntryMapper.toRaw(Defaults.randomPoint()))
+            val newSize = store.addRawPoint(RawMapper.toRaw(PointFactory.random()))
             if (newSize == Coordinates.MAX_SIZE) {
                 showMessage(
                     "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
@@ -96,10 +76,5 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     private fun checkIndex(index: Int) {
         if (index < 0 || index >= _inputState.value.input.size)
             throw ModelException("Точки с таким индексом не существует")
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        messageJob?.cancel()
     }
 }

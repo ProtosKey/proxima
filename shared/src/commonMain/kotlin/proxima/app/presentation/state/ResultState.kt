@@ -10,5 +10,5 @@ data class ResultState(
     val selected: Map<FunctionType, Boolean> = emptyMap(),
     val best: FunctionType? = null,
     val isLoading: Boolean = false,
-    val count: Long = 80L,
+    val count: Long = 32L,
 )

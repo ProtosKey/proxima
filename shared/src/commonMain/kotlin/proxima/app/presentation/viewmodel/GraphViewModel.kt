@@ -1,6 +1,5 @@
 package proxima.app.presentation.viewmodel
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.FunctionResult
@@ -8,15 +7,14 @@ import proxima.app.data.model.FunctionType
 import proxima.app.data.model.MessageType
 import proxima.app.domain.model.Coordinates
 import proxima.app.domain.model.Function
-import proxima.app.presentation.basic.HaveMessage
+import proxima.app.presentation.basic.BaseViewModel
 import proxima.app.presentation.mapper.DataMapper
-import proxima.app.presentation.mapper.EntryMapper
+import proxima.app.presentation.mapper.RawMapper
 import proxima.app.presentation.model.PointData
 import proxima.app.presentation.state.GraphState
 import proxima.app.presentation.tools.FastCalculator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -25,9 +23,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
+class GraphViewModel(store: MainStore) : BaseViewModel(store) {
     private var curvePoints: Int = 0
-    private var messageJob: Job? = null
     private var rangeJob: Job? = null
     private val _graphState = MutableStateFlow(GraphState())
     val graphState = _graphState.asStateFlow()
@@ -45,7 +42,7 @@ class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
             store.results
         ) { rawPoints, visible, isLoading, _ ->
             val pointData = rawPoints.mapNotNull { raw ->
-                runCatching { DataMapper.mapTo(EntryMapper.mapFrom(raw)) }.getOrNull()
+                runCatching { DataMapper.mapTo(RawMapper.toPoint(raw)) }.getOrNull()
             }
 
             _graphState.update {
@@ -109,7 +106,7 @@ class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
 
     fun addPoint(x: Float, y: Float) {
         if (store.rawPoints.value.size < Coordinates.MAX_SIZE) {
-            val raw = EntryMapper.toRaw(DataMapper.mapFrom(PointData(x, y)))
+            val raw = RawMapper.toRaw(DataMapper.mapFrom(PointData(x, y)))
             val newSize = store.addRawPoint(raw)
             _graphState.update {
                 it.copy(canAdd = newSize < Coordinates.MAX_SIZE)
@@ -128,25 +125,8 @@ class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
         }
     }
 
-    override fun hideMessage() {
-        messageJob?.cancel()
-        store.hideMessage()
-    }
-
-    override fun showMessage(message: String, messageType: MessageType) {
-        messageJob?.cancel()
-        messageJob = viewModelScope.launch {
-            if (store.notification.value.isVisible) {
-                store.hideMessage()
-                delay(250)
-            }
-            store.showMessage(message, messageType)
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
-        messageJob?.cancel()
         rangeJob?.cancel()
     }
 }
