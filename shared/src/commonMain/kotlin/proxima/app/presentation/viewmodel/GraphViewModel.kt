@@ -10,6 +10,7 @@ import proxima.app.domain.model.Coordinates
 import proxima.app.domain.model.Function
 import proxima.app.presentation.basic.HaveMessage
 import proxima.app.presentation.mapper.DataMapper
+import proxima.app.presentation.mapper.EntryMapper
 import proxima.app.presentation.model.PointData
 import proxima.app.presentation.state.GraphState
 import proxima.app.presentation.tools.FastCalculator
@@ -38,17 +39,19 @@ class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
         }.launchIn(viewModelScope)
 
         combine(
-            store.points,
+            store.rawPoints,
             store.visibleResults,
             store.isLoading,
             store.results
-        ) { points, visible, isLoading, _ ->
-            val pointData = points.map(DataMapper::mapTo)
+        ) { rawPoints, visible, isLoading, _ ->
+            val pointData = rawPoints.mapNotNull { raw ->
+                runCatching { DataMapper.mapTo(EntryMapper.mapFrom(raw)) }.getOrNull()
+            }
 
             _graphState.update {
                 it.copy(
                     points = pointData,
-                    canAdd = points.size < Coordinates.MAX_SIZE,
+                    canAdd = rawPoints.size < Coordinates.MAX_SIZE,
                     visible = visible,
                     theBest = findBestResult(store.results.value),
                     isLoading = isLoading
@@ -105,9 +108,9 @@ class GraphViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     }
 
     fun addPoint(x: Float, y: Float) {
-        if (store.points.value.size < Coordinates.MAX_SIZE) {
-            val point = DataMapper.mapFrom(PointData(x, y))
-            val newSize = store.addPoint(point)
+        if (store.rawPoints.value.size < Coordinates.MAX_SIZE) {
+            val raw = EntryMapper.toRaw(DataMapper.mapFrom(PointData(x, y)))
+            val newSize = store.addRawPoint(raw)
             _graphState.update {
                 it.copy(canAdd = newSize < Coordinates.MAX_SIZE)
             }

@@ -4,13 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.MessageType
+import proxima.app.data.model.RawPoint
 import proxima.app.data.utils.Defaults
 import proxima.app.domain.model.Coordinates
 import proxima.app.presentation.basic.HaveMessage
 import proxima.app.presentation.exception.ModelException
 import proxima.app.presentation.mapper.EntryMapper
-import proxima.app.presentation.model.PointEntry
-import proxima.app.presentation.tools.StringParser
 import proxima.app.presentation.state.InputState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -28,12 +27,12 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     val notification = store.notification
 
     init {
-        store.points.onEach { points ->
-            if (points.size != _inputState.value.input.size) {
+        store.rawPoints.onEach { rawPoints ->
+            if (rawPoints.size != _inputState.value.input.size) {
                 _inputState.update {
                     it.copy(
-                        input = points.map(EntryMapper::mapTo).toList(),
-                        canAdd = points.size < Coordinates.MAX_SIZE
+                        input = rawPoints.map(EntryMapper::toEntry),
+                        canAdd = rawPoints.size < Coordinates.MAX_SIZE
                     )
                 }
             }
@@ -60,35 +59,18 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
         try {
             checkIndex(index)
             val newInput = _inputState.value.input.toMutableList()
-            newInput[index] = PointEntry(x, y, isValid = isEntryValid(x, y))
+            newInput[index] = EntryMapper.toEntry(RawPoint(x, y))
             _inputState.update { it.copy(input = newInput) }
-            parsePoints()
+            store.updateRawPoint(index, x, y)
         } catch (e: ModelException) {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
         }
     }
 
-    private fun isEntryValid(x: String, y: String): Boolean {
-        return try {
-            StringParser.parseBigDecimal(x)
-            StringParser.parseBigDecimal(y)
-            true
-        } catch (_: Exception) {
-            false
-        }
-    }
-
     fun addPoint() {
-        val point = Defaults.randomPoint()
-        if (_inputState.value.input.size < Coordinates.MAX_SIZE) {
-            _inputState.update {
-                it.copy(
-                    input = _inputState.value.input + EntryMapper.mapTo(point),
-                    canAdd = _inputState.value.input.size + 1 < Coordinates.MAX_SIZE
-                )
-            }
-
-            if (store.addPoint(point) == Coordinates.MAX_SIZE) {
+        if (store.rawPoints.value.size < Coordinates.MAX_SIZE) {
+            val newSize = store.addRawPoint(EntryMapper.toRaw(Defaults.randomPoint()))
+            if (newSize == Coordinates.MAX_SIZE) {
                 showMessage(
                     "Добавлено максимальное количество точек в ${Coordinates.MAX_SIZE} единиц",
                     MessageType.WARNING
@@ -105,25 +87,10 @@ class InputViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     fun removeByIndex(index: Int) {
         try {
             checkIndex(index)
-            store.deletePointByIndex(index)
+            store.removeRawPoint(index)
         } catch (e: ModelException) {
             showMessage(e.message ?: Defaults.message(), MessageType.ERROR)
         }
-    }
-
-    private fun parsePoints() {
-        var needUpdate = true
-        val points = _inputState.value.input.mapNotNull { point ->
-            try {
-                EntryMapper.mapFrom(point)
-            } catch (_: Exception) {
-                needUpdate = false
-                null
-            }
-        }
-
-        if (needUpdate)
-            store.updatePoints(points)
     }
 
     private fun checkIndex(index: Int) {

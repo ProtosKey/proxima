@@ -4,15 +4,15 @@ import proxima.app.data.model.FunctionResult
 import proxima.app.data.model.FunctionType
 import proxima.app.data.model.MessageType
 import proxima.app.data.model.Notification
+import proxima.app.data.model.RawPoint
 import proxima.app.data.model.Settings
-import proxima.app.domain.model.Point
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class MainStore {
-    private val _points = MutableStateFlow<List<Point>>(emptyList())
-    val points = _points.asStateFlow()
+    private val _rawPoints = MutableStateFlow<List<RawPoint>>(emptyList())
+    val rawPoints = _rawPoints.asStateFlow()
 
     private val _visibleResults = MutableStateFlow<Map<FunctionType, Boolean>>(emptyMap())
     val visibleResults = _visibleResults.asStateFlow()
@@ -53,13 +53,25 @@ class MainStore {
         _isLoading.update { false }
     }
 
-    fun deletePointByIndex(index: Int) {
-        _points.update { points ->
-            val newPoints = points.toMutableList()
-            if (index in newPoints.indices) {
-                newPoints.removeAt(index)
-            }
-            newPoints
+    fun addRawPoint(raw: RawPoint): Int {
+        var newSize = 0
+        _rawPoints.update { current ->
+            val updated = current + raw
+            newSize = updated.size
+            updated
+        }
+        return newSize
+    }
+
+    fun removeRawPoint(index: Int) {
+        _rawPoints.update { current ->
+            current.toMutableList().also { it.removeAt(index) }
+        }
+    }
+
+    fun updateRawPoint(index: Int, x: String, y: String) {
+        _rawPoints.update { current ->
+            current.toMutableList().also { it[index] = RawPoint(x, y) }
         }
     }
 
@@ -81,20 +93,6 @@ class MainStore {
         }
     }
 
-    fun addPoint(point: Point): Int {
-        var newSize = 0
-        _points.update { current ->
-            val updated = current + point
-            newSize = updated.size
-            updated
-        }
-        return newSize
-    }
-
-    fun updatePoints(points: List<Point>) {
-        _points.update { points }
-    }
-
     fun updateFunctions(results: Map<FunctionType, FunctionResult>) {
         _results.update { results }
         checkVisible()
@@ -102,17 +100,13 @@ class MainStore {
 
     fun showMessage(message: String, messageType: MessageType) {
         _notification.update {
-            it.copy(
-                message = message, messageType = messageType, isVisible = true
-            )
+            it.copy(message = message, messageType = messageType, isVisible = true)
         }
     }
 
     fun hideMessage() {
         _notification.update {
-            it.copy(
-                isVisible = false
-            )
+            it.copy(isVisible = false)
         }
     }
 }

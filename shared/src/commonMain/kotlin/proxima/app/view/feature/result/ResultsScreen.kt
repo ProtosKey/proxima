@@ -37,6 +37,7 @@ import proxima.app.data.MainStore
 import proxima.app.presentation.viewmodel.ResultViewModel
 import proxima.app.theme.LocalAppDimens
 import proxima.app.view.basic.factory
+import proxima.app.view.component.Message
 import proxima.app.view.component.NavigationBar
 import proxima.app.view.component.Title
 import proxima.app.view.feature.graph.component.Empty
@@ -49,6 +50,7 @@ class ResultsScreen : Screen {
         val store = koinInject<MainStore>()
         val viewModel = viewModel<ResultViewModel>(factory = factory { ResultViewModel(store) })
         val state by viewModel.resultState.collectAsStateWithLifecycle()
+        val message by viewModel.notification.collectAsStateWithLifecycle()
         var height by remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
 
@@ -80,59 +82,71 @@ class ResultsScreen : Screen {
                 }
             }
         ) { padding ->
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = LocalAppDimens.current.paddingMedium),
-                verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingSmall)
+                    .padding(horizontal = LocalAppDimens.current.paddingMedium)
             ) {
-                Title(label = "Результаты")
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(LocalAppDimens.current.paddingSmall)
+                ) {
+                    Title(label = "Результаты")
 
-                if (state.results.entries.isNotEmpty() || state.isLoading) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(
-                            LocalAppDimens.current.paddingSmall
-                        ),
-                        contentPadding = PaddingValues(
-                            top = LocalAppDimens.current.paddingSmall,
-                            bottom = height + LocalAppDimens.current.paddingLarge
-                        ),
-                    ) {
-                        if (state.isLoading) {
-                            item {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().padding(32.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
+                    if (state.results.entries.isNotEmpty() || state.isLoading) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(
+                                LocalAppDimens.current.paddingSmall
+                            ),
+                            contentPadding = PaddingValues(
+                                top = LocalAppDimens.current.paddingSmall,
+                                bottom = height + LocalAppDimens.current.paddingLarge
+                            ),
+                        ) {
+                            if (state.isLoading) {
+                                item {
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth().padding(32.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
+                                }
+                            } else {
+                                items(
+                                    items = state.results.entries.toList(),
+                                    key = { (type, _) -> type }
+                                ) { (type, result) ->
+                                    val isBest = type == state.best
+                                    ResultLabel(
+                                        label = type.label,
+                                        isTheBest = isBest,
+                                        results = result,
+                                        type = type,
+                                        onHide = viewModel::tickFunction,
+                                        isVisible = viewModel.resultState.value.selected[type] ?: false,
+                                        state = state
+                                    )
                                 }
                             }
-                        } else {
-                            items(
-                                items = state.results.entries.toList(),
-                                key = { (type, _) -> type }
-                            ) { (type, result) ->
-                                val isBest = type == state.best
-                                ResultLabel(
-                                    label = type.label,
-                                    isTheBest = isBest,
-                                    results = result,
-                                    type = type,
-                                    onHide = viewModel::tickFunction,
-                                    isVisible = viewModel.resultState.value.selected[type] ?: false,
-                                    state = state
-                                )
-                            }
                         }
+                    } else {
+                        Empty(
+                            help = "Нажмите посчитать, чтобы провести аппроксимацию",
+                            icon = Icons.Default.QueryStats
+                        )
                     }
-                } else {
-                    Empty(
-                        help = "Нажмите посчитать, чтобы провести аппроксимацию",
-                        icon = Icons.Default.QueryStats
-                    )
                 }
+
+                Message(
+                    message = message.message,
+                    isVisible = message.isVisible,
+                    onClick = { viewModel.hideMessage() },
+                    bottom = height,
+                    type = message.messageType
+                )
             }
         }
     }

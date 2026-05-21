@@ -15,6 +15,7 @@ import proxima.app.domain.exception.SolverException
 import proxima.app.domain.model.Coordinates
 import proxima.app.domain.precision.QualityAnalyzer
 import proxima.app.presentation.basic.HaveMessage
+import proxima.app.presentation.mapper.EntryMapper
 import proxima.app.presentation.state.ResultState
 import proxima.app.presentation.tools.FunctionFormatter
 import kotlinx.coroutines.Dispatchers
@@ -29,12 +30,16 @@ import kotlinx.coroutines.launch
 class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
     private val _resultState = MutableStateFlow(ResultState())
     val resultState = _resultState.asStateFlow()
+    val notification = store.notification
 
     init {
         store.settings.onEach { settings ->
-            _resultState.update { it.copy(
-                count = settings.mathPrecision.value.toLong(),
-                formatter = FunctionFormatter(settings.displayPrecision.value.toInt())) }
+            _resultState.update {
+                it.copy(
+                    count = settings.mathPrecision.value.toLong(),
+                    formatter = FunctionFormatter(settings.displayPrecision.value.toInt())
+                )
+            }
         }.launchIn(viewModelScope)
 
         combine(
@@ -59,10 +64,24 @@ class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
 
     fun calculateResult() {
         if (_resultState.value.isLoading) return
+        if (store.rawPoints.value.isEmpty()) {
+            showMessage("Добавьте точки для расчёта", MessageType.ERROR)
+            return
+        }
+        if (store.rawPoints.value.any { runCatching { EntryMapper.mapFrom(it) }.isFailure }) {
+            showMessage("Исправьте некорректные точки перед расчётом", MessageType.ERROR)
+            return
+        }
         viewModelScope.launch(Dispatchers.Default) {
             store.startLoading()
             try {
-                val points = Coordinates(store.points.value.toMutableList())
+                val points = Coordinates(
+                    store.rawPoints.value
+                        .map {
+                            EntryMapper.mapFrom(it)
+                        }
+                        .toMutableList()
+                )
                 val newResults = Defaults.solvers().mapValues { (_, solver) ->
                     try {
                         val function = solver.solve(points, _resultState.value.count)
