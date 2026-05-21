@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.FunctionResult
 import proxima.app.data.model.FunctionType
+import proxima.app.data.model.findBest
 import proxima.app.data.model.MessageType
 import proxima.app.domain.model.Coordinates
 import proxima.app.domain.model.Function
@@ -50,19 +51,11 @@ class GraphViewModel(store: MainStore) : BaseViewModel(store) {
                     points = pointData,
                     canAdd = rawPoints.size < Coordinates.MAX_SIZE,
                     visible = visible,
-                    theBest = findBestResult(store.results.value),
+                    theBest = store.results.value.findBest(),
                     isLoading = isLoading
                 )
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun findBestResult(result: Map<FunctionType, FunctionResult>): FunctionType? {
-        return result.filterValues { result ->
-            result is FunctionResult.Success
-        }.maxByOrNull { result ->
-            (result.value as FunctionResult.Success).metrics.determination
-        }?.key
     }
 
     fun updateVisible(

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.FunctionResult
 import proxima.app.data.model.FunctionType
+import proxima.app.data.model.findBest
 import proxima.app.data.model.MessageType
 import proxima.app.data.utils.Defaults
 import proxima.app.domain.exception.EngineException
@@ -53,7 +54,7 @@ class ResultViewModel(store: MainStore) : BaseViewModel(store) {
                 it.copy(
                     results = results,
                     selected = visible,
-                    best = findBestResult(results),
+                    best = results.findBest(),
                     isLoading = isLoading
                 )
             }
@@ -120,11 +121,4 @@ class ResultViewModel(store: MainStore) : BaseViewModel(store) {
         } ?: Defaults.message()
     }
 
-    private fun findBestResult(result: Map<FunctionType, FunctionResult>): FunctionType? {
-        return result.filterValues { result ->
-            result is FunctionResult.Success
-        }.maxByOrNull { result ->
-            (result.value as FunctionResult.Success).metrics.determination
-        }?.key
-    }
 }
