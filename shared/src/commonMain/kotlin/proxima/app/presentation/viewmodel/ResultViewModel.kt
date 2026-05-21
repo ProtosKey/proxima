@@ -18,6 +18,9 @@ import proxima.app.presentation.basic.HaveMessage
 import proxima.app.presentation.mapper.EntryMapper
 import proxima.app.presentation.state.ResultState
 import proxima.app.presentation.tools.FunctionFormatter
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -82,18 +85,20 @@ class ResultViewModel(private val store: MainStore) : ViewModel(), HaveMessage {
                         }
                         .toMutableList()
                 )
-                val newResults = Defaults.solvers().mapValues { (_, solver) ->
-                    try {
-                        val function = solver.solve(points, _resultState.value.count)
-                        FunctionResult.Success(
-                            function,
-                            QualityAnalyzer.analise(function, points, _resultState.value.count)
-                        )
-                    } catch (e: Exception) {
-                        FunctionResult.Error(
-                            getMessageByError(e)
-                        )
-                    }
+                val newResults = coroutineScope {
+                    Defaults.solvers().map { (type, solver) ->
+                        async {
+                            type to try {
+                                val function = solver.solve(points, _resultState.value.count)
+                                FunctionResult.Success(
+                                    function,
+                                    QualityAnalyzer.analise(function, points, _resultState.value.count)
+                                )
+                            } catch (e: Exception) {
+                                FunctionResult.Error(getMessageByError(e))
+                            }
+                        }
+                    }.awaitAll().toMap()
                 }
                 store.updateFunctions(newResults)
             } catch (e: Exception) {
