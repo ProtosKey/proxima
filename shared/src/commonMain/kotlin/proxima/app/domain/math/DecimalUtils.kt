@@ -5,8 +5,8 @@ import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 
-fun BigDecimal.toFloat(): Float = this.toString().toFloat()
-fun BigDecimal.toDouble(): Double = this.toString().toDouble()
+fun BigDecimal.toFloat(): Float = this.floatValue(false)
+fun BigDecimal.toDouble(): Double = this.doubleValue(false)
 
 private fun getEpsilon(decimalMode: DecimalMode): BigDecimal {
     return BigDecimal.ONE.divide(
@@ -95,10 +95,13 @@ fun BigDecimal.pow(add: BigDecimal, decimalMode: DecimalMode): BigDecimal {
 }
 
 object DecimalUtils {
-    fun getMode(precision: Long): DecimalMode {
-        return DecimalMode(
-            decimalPrecision = precision,
-            roundingMode = RoundingMode.ROUND_HALF_FLOOR
-        )
-    }
+    private val cache = mapOf(
+        16L to DecimalMode(16, RoundingMode.ROUND_HALF_FLOOR),
+        32L to DecimalMode(32, RoundingMode.ROUND_HALF_FLOOR),
+        64L to DecimalMode(64, RoundingMode.ROUND_HALF_FLOOR),
+        128L to DecimalMode(128, RoundingMode.ROUND_HALF_FLOOR)
+    )
+
+    fun getMode(precision: Long): DecimalMode =
+        cache[precision] ?: DecimalMode(precision, RoundingMode.ROUND_HALF_FLOOR)
 }
