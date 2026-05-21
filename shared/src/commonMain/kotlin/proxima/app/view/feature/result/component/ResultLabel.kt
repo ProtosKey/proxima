@@ -101,21 +101,30 @@ fun ResultLabel(
                     ) {
                         MetricResult(
                             label = "\\textsf{R}^{2} \\textsf{(Детерминация)}",
-                            value = StringParser.prepareToString(
-                                results.metrics.determination
-                            ),
+                            value = "\\textrm{${StringParser.prepareToString(results.metrics.determination)}}",
                             modifier = Modifier.weight(1f),
                         )
 
                         if (results.metrics is Metrics.Linear) {
                             MetricResult(
                                 label = "\\textsf{r} \\textsf{(Пирсон)}",
-                                value = StringParser.prepareToString(
-                                    results.metrics.linear
-                                ),
+                                value = "\\textrm{${StringParser.prepareToString(results.metrics.linear)}}",
                                 modifier = Modifier.weight(1f),
                             )
                         }
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            LocalAppDimens.current.paddingSmall
+                        )
+                    ) {
+                        MetricResult(
+                            label = "\\sigma \\textsf{(Срендеквадратичное отклонение)}",
+                            value = "\\textrm{${StringParser.prepareToString(results.metrics.sko)}}",
+                            modifier = Modifier.weight(1f),
+                        )
                     }
                 }
             }

@@ -7,14 +7,17 @@ import proxima.app.domain.model.Metrics
 
 object QualityAnalyzer : Analyzer {
     override fun analise(function: Function, points: Coordinates, count: Long): Metrics {
-        val determination = Determination.calcDetermination(function, points, count)
+        val det = Determination.calcDetermination(function, points, count)
         return when (function) {
             is Function.Linear -> Metrics.Linear(
-                determination,
-                Pearson.calcPearson(points, count)
+                determination = det.r2,
+                linear = Pearson.calcPearson(points, count),
+                sko = det.sko
             )
-
-            else -> Metrics.Common(determination)
+            else -> Metrics.Common(
+                determination = det.r2,
+                sko = det.sko
+            )
         }
     }
 }

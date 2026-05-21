@@ -6,9 +6,15 @@ import proxima.app.domain.exception.PrecisionException
 import proxima.app.domain.model.Coordinates
 import proxima.app.domain.model.Function
 import proxima.app.domain.math.DecimalUtils
+import proxima.app.domain.math.sqrt
+
+data class DeterminationResult(
+    val r2: BigDecimal,
+    val sko: BigDecimal
+)
 
 object Determination {
-    fun calcDetermination(function: Function, points: Coordinates, count: Long): BigDecimal {
+    fun calcDetermination(function: Function, points: Coordinates, count: Long): DeterminationResult {
         val mode = DecimalUtils.getMode(count)
         val calculated = points.map { function.calculate(it.x, count) }
 
@@ -20,10 +26,13 @@ object Determination {
         }
         val down = points.fold(BigDecimal.ZERO) { acc, point -> acc + (point.y - middle).pow(2) }
 
-        return if (down.isZero()) {
+        if (down.isZero()) {
             throw PrecisionException("Не удалось посчитать коэффициент детерминации")
-        } else {
-            BigDecimal.ONE - top.divide(down, mode)
         }
+
+        val r2 = BigDecimal.ONE - top.divide(down, mode)
+        val sko = top.divide(points.size.toBigDecimal(), mode).sqrt(mode)
+
+        return DeterminationResult(r2 = r2, sko = sko)
     }
 }

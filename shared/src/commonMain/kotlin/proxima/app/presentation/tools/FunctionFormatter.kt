@@ -4,6 +4,9 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import proxima.app.domain.basic.FunctionVisitor
 
 class FunctionFormatter(private val count: Int) : FunctionVisitor<String> {
+    private fun format(number: BigDecimal) =
+        "\\textrm{${StringParser.prepareToString(number, count)}}"
+
     private fun getSign(number: BigDecimal): String {
         return if (number >= BigDecimal.ZERO) "+" else "-"
     }
@@ -12,8 +15,7 @@ class FunctionFormatter(private val count: Int) : FunctionVisitor<String> {
         a: BigDecimal,
         b: BigDecimal,
     ): String {
-        return "f(x) = ${StringParser.prepareToString(a,count)}x ${getSign(b)} " +
-                StringParser.prepareToString(b.abs(), count)
+        return "f(x) = ${format(a)}x ${getSign(b)} ${format(b.abs())}"
     }
 
     override fun visitSecond(
@@ -21,9 +23,9 @@ class FunctionFormatter(private val count: Int) : FunctionVisitor<String> {
         b: BigDecimal,
         c: BigDecimal,
     ): String {
-        return "s(x) = ${StringParser.prepareToString(a, count)}x^{2} ${getSign(b)} " +
-                "${StringParser.prepareToString(b.abs(), count)}x ${getSign(c)} " +
-                StringParser.prepareToString(c.abs(), count)
+        return "s(x) = ${format(a)}x^{2} ${getSign(b)} " +
+                "${format(b.abs())}x ${getSign(c)} " +
+                format(c.abs())
     }
 
     override fun visitThird(
@@ -32,34 +34,34 @@ class FunctionFormatter(private val count: Int) : FunctionVisitor<String> {
         c: BigDecimal,
         d: BigDecimal,
     ): String {
-        return "t(x) = ${StringParser.prepareToString(a, count)}x^{3} ${getSign(b)} " +
-                "${StringParser.prepareToString(b.abs(), count)}x^{2} " +
-                "${getSign(c)} ${StringParser.prepareToString(c.abs(), count)}x " +
-                "${getSign(d)} ${StringParser.prepareToString(d.abs(), count)}"
+        return "t(x) = ${format(a)}x^{3} ${getSign(b)} " +
+                "${format(b.abs())}x^{2} " +
+                "${getSign(c)} ${format(c.abs())}x " +
+                "${getSign(d)} ${format(d.abs())}"
     }
 
     override fun visitExponent(
         a: BigDecimal,
         b: BigDecimal,
     ): String {
-        return "e(x) = ${StringParser.prepareToString(a, count)} " +
-                "\\cdot e^{${StringParser.prepareToString(b, count)}x}"
+        return "e(x) = ${format(a)} " +
+                "\\cdot e^{${format(b)}x}"
     }
 
     override fun visitLogarithm(
         a: BigDecimal,
         b: BigDecimal,
     ): String {
-        return "l(x) = ${StringParser.prepareToString(a, count)} " +
+        return "l(x) = ${format(a)} " +
                 "\\cdot \\ln(x) ${getSign(b)} " +
-                StringParser.prepareToString(b.abs(), count)
+                format(b.abs())
     }
 
     override fun visitPower(
         a: BigDecimal,
         b: BigDecimal,
     ): String {
-        return "p(x) = ${StringParser.prepareToString(a, count)} " +
-                "\\cdot x^{${StringParser.prepareToString(b, count)}}"
+        return "p(x) = ${format(a)} " +
+                "\\cdot x^{${format(b)}}"
     }
 }
