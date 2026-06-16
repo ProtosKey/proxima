@@ -14,7 +14,7 @@ android {
         minSdk = 24
         targetSdk = 36
 
-        applicationId = "interpolation.app.androidApp"
+        applicationId = "proxima.app.androidApp"
         versionCode = 1
         versionName = "1.0.0"
     }

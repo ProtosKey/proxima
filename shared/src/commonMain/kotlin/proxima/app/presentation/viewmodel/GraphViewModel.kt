@@ -3,7 +3,6 @@ package proxima.app.presentation.viewmodel
 import androidx.lifecycle.viewModelScope
 import proxima.app.data.MainStore
 import proxima.app.data.model.FunctionResult
-import proxima.app.data.model.FunctionType
 import proxima.app.data.model.findBest
 import proxima.app.data.model.MessageType
 import proxima.app.domain.model.Coordinates
